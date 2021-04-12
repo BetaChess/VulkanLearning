@@ -5,5 +5,8 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("VulkanLearning")
 
+
 # Include sub-projects.
 add_subdirectory ("Triangle")
+add_subdirectory ("vendor/glfw")
+add_subdirectory ("vendor/glm")
