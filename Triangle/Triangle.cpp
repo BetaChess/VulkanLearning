@@ -3,18 +3,27 @@
 //
 
 
+#include "phm_app.h"
+
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include <cstdlib>
+#include <stdexcept>
+
+
 
 int main()
 {
-	GLFWwindow* window;
+	phm::Application app{ };
 
-	if (!glfwInit())
+	try
 	{
-
+		app.run();
 	}
-
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what();
+		return EXIT_FAILURE;
+	}
 	
-	return 0;
+	return EXIT_SUCCESS;
 }
