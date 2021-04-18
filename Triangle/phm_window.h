@@ -24,6 +24,8 @@ namespace phm
 		// Public methods
 		inline bool shouldClose() { return glfwWindowShouldClose(m_window); };
 
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
 	private:
 		// Private members
 		GLFWwindow* m_window;

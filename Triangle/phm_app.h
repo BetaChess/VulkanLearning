@@ -16,8 +16,8 @@ namespace phm
 		void run();
 
 	private:
-		PhmWindow m_window { WIDTH, HEIGHT, "Triangle" }; 
-		PhmPipeline m_pipeline { "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
+		PhmWindow m_window{ WIDTH, HEIGHT, "Triangle" };
+		PhmPipeline m_pipeline{ "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
 
 
 	};

@@ -1,6 +1,8 @@
 
 #include "phm_window.h"
 
+#include <stdexcept>
+
 namespace phm
 {
 	PhmWindow::PhmWindow(size_t w, size_t h, std::string name)
@@ -25,8 +27,16 @@ namespace phm
 
 		// Make the window non-resizable.
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		
+
 		m_window = glfwCreateWindow(m_width, m_height, m_windowName.c_str(), nullptr, nullptr);
+	}
+
+	void PhmWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+	{
+		if (glfwCreateWindowSurface(instance, m_window, nullptr, surface) != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create window surface! ");
+		}
 	}
 
 
