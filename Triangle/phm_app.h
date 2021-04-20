@@ -17,7 +17,13 @@ namespace phm
 
 	private:
 		PhmWindow m_window{ WIDTH, HEIGHT, "Triangle" };
-		PhmPipeline m_pipeline{ "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
+		PhmDevice m_device{ m_window };
+		PhmPipeline m_pipeline{
+			m_device,
+			"shaders/simple_shader.vert.spv",
+			"shaders/simple_shader.frag.spv",
+			PhmPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)
+		};
 
 
 	};
