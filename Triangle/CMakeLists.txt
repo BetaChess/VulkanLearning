@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 project(Triangle)
 
 # Add source to this project's executable.
-add_executable (${PROJECT_NAME} "Triangle.cpp"  "phm_window.h" "phm_window.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp")
+add_executable (${PROJECT_NAME} "Triangle.cpp"  "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp")
 
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES

@@ -167,9 +167,6 @@ namespace phm
 		return result;
 	}
 
-	/// <summary>
-	/// Creates the swapchain. 
-	/// </summary>
 	void PhmSwapchain::createSwapChain()
 	{ 
 		// Queries the device for swapchain support details.
@@ -253,6 +250,8 @@ namespace phm
 	void PhmSwapchain::createImageViews()
 	{
 		m_swapChainImageViews.resize(m_swapChainImages.size());
+
+		// Iterate over each image view and initialise it. 
 		for (size_t i = 0; i < m_swapChainImages.size(); i++)
 		{
 			VkImageViewCreateInfo viewInfo{};
@@ -338,6 +337,7 @@ namespace phm
 	void PhmSwapchain::createFramebuffers()
 	{
 		m_swapChainFramebuffers.resize(imageCount());
+
 		for (size_t i = 0; i < imageCount(); i++)
 		{
 			std::array<VkImageView, 2> attachments = { m_swapChainImageViews[i], m_depthImageViews[i] };
@@ -467,13 +467,6 @@ namespace phm
 				return availablePresentMode;
 			}
 		}
-
-		// for (const auto &availablePresentMode : availablePresentModes) {
-		//   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-		//     std::cout << "Present mode: Immediate" << std::endl;
-		//     return availablePresentMode;
-		//   }
-		// }
 
 		std::cout << "Present mode: V-Sync" << std::endl;
 		return VK_PRESENT_MODE_FIFO_KHR;

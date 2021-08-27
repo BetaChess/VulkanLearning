@@ -64,21 +64,29 @@ namespace phm
 		shaderStages[1].pSpecializationInfo = nullptr;
 
 		// Initiate the vertex input info
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo;
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+
+		// Initiate the viewportInfo
+		VkPipelineViewportStateCreateInfo viewportInfo{};
+		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		viewportInfo.viewportCount = 1;
+		viewportInfo.pViewports = &configInfo.viewport;
+		viewportInfo.scissorCount = 1;
+		viewportInfo.pScissors = &configInfo.scissor;
 		
 		// Create the actual pipeline creation info.
-		VkGraphicsPipelineCreateInfo pipelineInfo;
+		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineInfo.stageCount = 2;
 		pipelineInfo.pStages = shaderStages;
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineInfo.pViewportState = &configInfo.viewportInfo;
+		pipelineInfo.pViewportState = &viewportInfo;
 		pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
 		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
@@ -127,7 +135,7 @@ namespace phm
 
 	void PhmPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
 	{
-		VkShaderModuleCreateInfo createInfo;
+		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
@@ -138,10 +146,17 @@ namespace phm
 		}
 	}
 
-	PipelineConfigInfo phm::PhmPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
+	void PhmPipeline::bind(VkCommandBuffer commandBuffer)
 	{
-		PipelineConfigInfo configInfo;
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+	}
 
+	/// <summary>
+	/// Takes in a reference to a configInfo object and writes default values to it.
+	/// </summary>
+	/// <param name="configInfo">The reference to be written to. </param>
+	void phm::PhmPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height)
+	{
 		// Initiate the input assembly info.
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		// We use triangles as primitive.
@@ -162,13 +177,6 @@ namespace phm
 		// Initiate scissor
 		configInfo.scissor.offset = { 0, 0 };
 		configInfo.scissor.extent = { width, height };
-
-		// Initiate the viewportInfo
-		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		configInfo.viewportInfo.viewportCount = 1;
-		configInfo.viewportInfo.pViewports = &configInfo.viewport;
-		configInfo.viewportInfo.scissorCount = 1;
-		configInfo.viewportInfo.pScissors = &configInfo.scissor;
 
 		// Initiate the rasterization info
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -226,8 +234,5 @@ namespace phm
 		configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
 		configInfo.depthStencilInfo.front = {};
 		configInfo.depthStencilInfo.back = {};
-
-
-		return configInfo;
 	}
 } // namespace phm

@@ -10,15 +10,18 @@ namespace phm
 {
 	struct PipelineConfigInfo
 	{
+		PipelineConfigInfo() = default;
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
 		VkViewport viewport;
 		VkRect2D scissor;
-		VkPipelineViewportStateCreateInfo viewportInfo;
-		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-		VkPipelineMultisampleStateCreateInfo multisampleInfo;
-		VkPipelineColorBlendAttachmentState colorBlendAttachment;
-		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{};
+		VkPipelineRasterizationStateCreateInfo rasterizationInfo{};
+		VkPipelineMultisampleStateCreateInfo multisampleInfo{};
+		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+		VkPipelineColorBlendStateCreateInfo colorBlendInfo{};
+		VkPipelineDepthStencilStateCreateInfo depthStencilInfo{};
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -42,7 +45,10 @@ namespace phm
 		PhmPipeline(PhmPipeline&&) = delete;
 		PhmPipeline& operator=(PhmPipeline&&) = delete;
 
-		static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
+		void bind(VkCommandBuffer commandBuffer);
+
+		// Static methods
+		static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height);
 
 	private:
 		// Private member variables

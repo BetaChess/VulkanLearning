@@ -6,6 +6,24 @@
 #include <unordered_set>
 #include <map>
 
+
+// This is simply a macro to add colors to validation layer messages. 
+// May add other platforms later, but it's really only meant to make debugging a bit easier.
+#ifdef PLATFORM_WINDOWS
+#include <Windows.h>
+
+#define setConsoleColor(x) HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, x);
+
+#define ERRORCOL 4
+#define WARNCOL 6
+#define INFOCOL 3
+#define DEFAULTCOL 7
+
+#else
+#define setConsoleColor(x)
+
+#endif
+
 namespace phm
 {
 
@@ -16,7 +34,24 @@ namespace phm
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
-		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+
+		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			setConsoleColor(ERRORCOL);
+			std::cerr << "\nvalidation layer !!!ERROR!!!: " << pCallbackData->pMessage << std::endl;
+		}
+		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			setConsoleColor(WARNCOL);
+			std::cout << "validation layer WARNING: " << pCallbackData->pMessage << std::endl;
+		}
+		else
+		{
+			setConsoleColor(INFOCOL);
+			std::cout << "validation layer INFO: " << pCallbackData->pMessage << std::endl;
+		}
+
+		setConsoleColor(DEFAULTCOL);
 
 		return VK_FALSE;
 	}

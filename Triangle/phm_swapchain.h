@@ -27,9 +27,9 @@ namespace phm
 		PhmSwapchain& operator=(PhmSwapchain&&) = delete;
 
 
-		VkFramebuffer getFrameBuffer(int index) { return m_swapChainFramebuffers[index]; }
+		VkFramebuffer getFrameBuffer(size_t index) { return m_swapChainFramebuffers[index]; }
 		VkRenderPass getRenderPass() { return m_renderPass; }
-		VkImageView getImageView(int index) { return m_swapChainImageViews[index]; }
+		VkImageView getImageView(size_t index) { return m_swapChainImageViews[index]; }
 		size_t imageCount() { return m_swapChainImages.size(); }
 		VkFormat getSwapChainImageFormat() { return m_swapChainImageFormat; }
 		VkExtent2D getSwapChainExtent() { return m_swapChainExtent; }
