@@ -1,5 +1,6 @@
 
 #include "phm_pipeline.h"
+#include "phm_model.h"
 
 #include <fstream>
 #include <stdexcept>
@@ -64,12 +65,15 @@ namespace phm
 		shaderStages[1].pSpecializationInfo = nullptr;
 
 		// Initiate the vertex input info
+		auto bindingDescriptions = PhmModel::Vertex::getBindingDescriptions();
+		auto attributeDescriptions = PhmModel::Vertex::getAttributeDescriptions();
+
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
 		// Initiate the viewportInfo
 		VkPipelineViewportStateCreateInfo viewportInfo{};

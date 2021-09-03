@@ -24,7 +24,7 @@ namespace phm
 		glfwInit();
 		// We're not using openGL, so disable it.
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
+		
 		// Make the window non-resizable.
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 

@@ -4,6 +4,7 @@
 #include "phm_window.h"
 #include "phm_pipeline.h"
 #include "phm_swapchain.h"
+#include "phm_model.h"
 
 #include <memory>
 #include <vector>
@@ -14,8 +15,8 @@ namespace phm
 	{
 
 	public:
-		static constexpr size_t WIDTH = 800;
-		static constexpr size_t HEIGHT = 600;
+		static constexpr size_t WIDTH = 800*2;
+		static constexpr size_t HEIGHT = 600*2;
 
 		Application();
 		~Application();
@@ -32,13 +33,9 @@ namespace phm
 		std::unique_ptr<PhmPipeline> m_pipeline;
 		VkPipelineLayout m_pipelineLayout;
 		std::vector<VkCommandBuffer> m_commandBuffers;
-		//PhmPipeline m_pipeline{
-		//	m_device,
-		//	"shaders/simple_shader.vert.spv",
-		//	"shaders/simple_shader.frag.spv",
-		//	PhmPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)
-		//};
+		std::unique_ptr<PhmModel> m_model; // TEMP
 
+		void loadModels(); // TEMP
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();

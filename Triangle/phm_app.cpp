@@ -2,11 +2,105 @@
 
 #include <stdexcept>
 #include <array>
+#include <iostream>
+
+std::vector<phm::PhmModel::Vertex> sierpinskiTriangle(std::array<phm::PhmModel::Vertex, 3> initialTriangle, size_t depth)
+{
+	if (depth == 0)
+		return { initialTriangle[0], initialTriangle[1], initialTriangle[2] };
+
+	auto triangles1 = sierpinskiTriangle(
+		{
+			initialTriangle[0],
+			{
+				{ // position
+					initialTriangle[0].pos.x + (initialTriangle[1].pos.x - initialTriangle[0].pos.x) * 0.5f,
+					initialTriangle[0].pos.y + (initialTriangle[1].pos.y - initialTriangle[0].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[0].col.r + (initialTriangle[1].col.r - initialTriangle[0].col.r) * 0.5f,
+					initialTriangle[0].col.g + (initialTriangle[1].col.g - initialTriangle[0].col.g) * 0.5f,
+					initialTriangle[0].col.b + (initialTriangle[1].col.b - initialTriangle[0].col.b) * 0.5f
+				}
+			},
+			{
+				{ // Position
+					initialTriangle[0].pos.x + (initialTriangle[2].pos.x - initialTriangle[0].pos.x) * 0.5f, 
+					initialTriangle[0].pos.y + (initialTriangle[2].pos.y - initialTriangle[0].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[0].col.r + (initialTriangle[2].col.r - initialTriangle[0].col.r) * 0.5f,
+					initialTriangle[0].col.g + (initialTriangle[2].col.g - initialTriangle[0].col.g) * 0.5f,
+					initialTriangle[0].col.b + (initialTriangle[2].col.b - initialTriangle[0].col.b) * 0.5f
+				}
+			}
+		}, depth - 1);
+	auto triangles2 = sierpinskiTriangle(
+		{
+			initialTriangle[1],
+			{
+				{ // position
+					initialTriangle[1].pos.x + (initialTriangle[0].pos.x - initialTriangle[1].pos.x) * 0.5f,
+					initialTriangle[1].pos.y + (initialTriangle[0].pos.y - initialTriangle[1].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[1].col.r + (initialTriangle[0].col.r - initialTriangle[1].col.r) * 0.5f,
+					initialTriangle[1].col.g + (initialTriangle[0].col.g - initialTriangle[1].col.g) * 0.5f,
+					initialTriangle[1].col.b + (initialTriangle[0].col.b - initialTriangle[1].col.b) * 0.5f
+				}
+			},
+			{
+				{ // Position
+					initialTriangle[1].pos.x + (initialTriangle[2].pos.x - initialTriangle[1].pos.x) * 0.5f,
+					initialTriangle[1].pos.y + (initialTriangle[2].pos.y - initialTriangle[1].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[1].col.r + (initialTriangle[2].col.r - initialTriangle[1].col.r) * 0.5f,
+					initialTriangle[1].col.g + (initialTriangle[2].col.g - initialTriangle[1].col.g) * 0.5f,
+					initialTriangle[1].col.b + (initialTriangle[2].col.b - initialTriangle[1].col.b) * 0.5f
+				}
+			}
+		}, depth - 1);
+	auto triangles3 = sierpinskiTriangle(
+		{
+			initialTriangle[2],
+			{
+				{ // position
+					initialTriangle[2].pos.x + (initialTriangle[0].pos.x - initialTriangle[2].pos.x) * 0.5f,
+					initialTriangle[2].pos.y + (initialTriangle[0].pos.y - initialTriangle[2].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[2].col.r + (initialTriangle[0].col.r - initialTriangle[2].col.r) * 0.5f,
+					initialTriangle[2].col.g + (initialTriangle[0].col.g - initialTriangle[2].col.g) * 0.5f,
+					initialTriangle[2].col.b + (initialTriangle[0].col.b - initialTriangle[2].col.b) * 0.5f
+				}
+			},
+			{
+				{ // Position
+					initialTriangle[2].pos.x + (initialTriangle[1].pos.x - initialTriangle[2].pos.x) * 0.5f,
+					initialTriangle[2].pos.y + (initialTriangle[1].pos.y - initialTriangle[2].pos.y) * 0.5f
+				},
+				{ // Color
+					initialTriangle[2].col.r + (initialTriangle[1].col.r - initialTriangle[2].col.r) * 0.5f,
+					initialTriangle[2].col.g + (initialTriangle[1].col.g - initialTriangle[2].col.g) * 0.5f,
+					initialTriangle[2].col.b + (initialTriangle[1].col.b - initialTriangle[2].col.b) * 0.5f
+				}
+			}
+		}, depth - 1);
+
+	std::vector<phm::PhmModel::Vertex> retVec;
+	retVec.insert(retVec.end(), triangles1.begin(), triangles1.end());
+	retVec.insert(retVec.end(), triangles2.begin(), triangles2.end());
+	retVec.insert(retVec.end(), triangles3.begin(), triangles3.end());
+
+	return retVec;
+}
 
 namespace phm
 {
 	Application::Application()
 	{
+		loadModels();
 		createPipelineLayout();
 		createPipeline();
 		createCommandBuffers();
@@ -45,6 +139,24 @@ namespace phm
 		}
 	}
 
+	void Application::loadModels()
+	{
+		/*std::vector<PhmModel::Vertex> vertices
+		{
+			{{0.0f, -0.5f}},
+			{{0.5f, 0.5f}},
+			{{-0.5f, 0.5f}}
+		};*/
+		std::vector<PhmModel::Vertex> vertices = sierpinskiTriangle(
+			{ { 
+				{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+				{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+				{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+			} }, 6);
+
+		m_model = std::make_unique<PhmModel>(m_device, vertices);
+	}
+
 	void Application::createPipeline()
 	{
 		phm::PipelineConfigInfo pipelineConfig{};
@@ -53,11 +165,11 @@ namespace phm
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
 
 		m_pipeline = std::make_unique<PhmPipeline>(
-			m_device, 
-			"shaders/simple_shader.vert.spv", 
-			"shaders/simple_shader.frag.spv", 
+			m_device,
+			"shaders/simple_shader.vert.spv",
+			"shaders/simple_shader.frag.spv",
 			pipelineConfig
-		);
+			);
 
 	}
 
@@ -70,7 +182,7 @@ namespace phm
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandPool = m_device.getCommandPool();
 		allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
-		
+
 		if (vkAllocateCommandBuffers(m_device.device(), &allocInfo, m_commandBuffers.data()) != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to allocate command buffers");
@@ -104,7 +216,8 @@ namespace phm
 			vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			m_pipeline->bind(m_commandBuffers[i]);
-			vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
+			m_model->bind(m_commandBuffers[i]);
+			m_model->draw(m_commandBuffers[i]);
 
 			vkCmdEndRenderPass(m_commandBuffers[i]);
 			if (vkEndCommandBuffer(m_commandBuffers[i]) != VK_SUCCESS)

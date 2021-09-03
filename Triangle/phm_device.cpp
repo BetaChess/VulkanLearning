@@ -182,7 +182,7 @@ namespace phm
 		}
 		else
 		{
-	  // Specify that no layers are enabled (0)
+			// Specify that no layers are enabled (0)
 			createInfo.enabledLayerCount = 0;
 
 			// Give it a nullptr to the creation info.
@@ -210,7 +210,7 @@ namespace phm
 		// Finally, create the m_instance
 		if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
 		{
-// If the instance failed to be created, throw a runtime error.
+			// If the instance failed to be created, throw a runtime error.
 			throw std::runtime_error("failed to create m_instance!");
 		}
 
@@ -682,7 +682,7 @@ namespace phm
 	/// <param name="properties">: A bitmask of the required properties. </param>
 	/// <returns>The index to the suitable memory. </returns>
 	uint32_t PhmDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-	{	
+	{
 		// Get the memory properties of the physical device
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);
@@ -726,7 +726,7 @@ namespace phm
 		bufferInfo.usage = usage;
 		// Access to any range or image subresource of the object will be exclusive to a single queue family at a time
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		
+
 		// Attempt to create the buffer.
 		if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
 		{
@@ -849,7 +849,7 @@ namespace phm
 
 		region.imageOffset = { 0, 0, 0 };
 		region.imageExtent = { width, height, 1 };
-		
+
 		// Submit the copy command to the command buffer. 
 		vkCmdCopyBufferToImage(
 			commandBuffer,

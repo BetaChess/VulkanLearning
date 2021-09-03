@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 project(Triangle)
 
 # Add source to this project's executable.
-add_executable (${PROJECT_NAME} "Triangle.cpp"  "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp")
+add_executable (${PROJECT_NAME} "Triangle.cpp" "phm_model.h" "phm_model.cpp" "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp" "phm_model.h" "phm_model.cpp")
 
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES
@@ -18,6 +18,7 @@ set_target_properties(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} 
 	PUBLIC $ENV{VULKAN_SDK}/Include/ 
 	PUBLIC ../vendor/glfw/include/
+    PUBLIC ../vendor/glm/
 )
 
 target_link_directories(${PROJECT_NAME}
