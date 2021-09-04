@@ -14,14 +14,15 @@ namespace phm
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
-		VkViewport viewport;
-		VkRect2D scissor;
+		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{};
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo{};
 		VkPipelineMultisampleStateCreateInfo multisampleInfo{};
 		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 		VkPipelineColorBlendStateCreateInfo colorBlendInfo{};
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo{};
+		std::vector<VkDynamicState> dynamicStateEnables;
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -48,14 +49,14 @@ namespace phm
 		void bind(VkCommandBuffer commandBuffer);
 
 		// Static methods
-		static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height);
+		static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
 	private:
 		// Private member variables
-		PhmDevice& m_device; // Pipeline has an aggregate relation to the device.
-		VkPipeline m_graphicsPipeline;
-		VkShaderModule m_vertexShaderModule;
-		VkShaderModule m_fragmentShaderModule;
+		PhmDevice& device_; // Pipeline has an aggregate relation to the device.
+		VkPipeline graphicsPipeline_;
+		VkShaderModule vertexShaderModule_;
+		VkShaderModule fragmentShaderModule_;
 
 
 		// Private methods

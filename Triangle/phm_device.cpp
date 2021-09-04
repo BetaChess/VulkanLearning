@@ -57,19 +57,19 @@ namespace phm
 	}
 
 	VkResult CreateDebugUtilsMessengerEXT(
-		VkInstance m_instance,
+		VkInstance instance_,
 		const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 		const VkAllocationCallbacks* pAllocator,
 		VkDebugUtilsMessengerEXT* pDebugMessenger)
 	{
 
 		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-			m_instance,
+			instance_,
 			"vkCreateDebugUtilsMessengerEXT");
 
 		if (func != nullptr)
 		{
-			return func(m_instance, pCreateInfo, pAllocator, pDebugMessenger);
+			return func(instance_, pCreateInfo, pAllocator, pDebugMessenger);
 		}
 		else
 		{
@@ -79,17 +79,17 @@ namespace phm
 	}
 
 	void DestroyDebugUtilsMessengerEXT(
-		VkInstance m_instance,
+		VkInstance instance_,
 		VkDebugUtilsMessengerEXT debugMessenger,
 		const VkAllocationCallbacks* pAllocator)
 	{
 		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-			m_instance,
+			instance_,
 			"vkDestroyDebugUtilsMessengerEXT");
 
 		if (func != nullptr)
 		{
-			func(m_instance, debugMessenger, pAllocator);
+			func(instance_, debugMessenger, pAllocator);
 		}
 
 	}
@@ -97,7 +97,7 @@ namespace phm
 	// class member functions
 
 	PhmDevice::PhmDevice(PhmWindow& window)
-		: m_window{ window }
+		: window_{ window }
 	{
 		// Names of the methods should be explaination enough.
 		createInstance();
@@ -112,17 +112,17 @@ namespace phm
 	{
 		// Do the cleanup in the right order.
 
-		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
-		vkDestroyDevice(m_device, nullptr);
+		vkDestroyCommandPool(device_, commandPool_, nullptr);
+		vkDestroyDevice(device_, nullptr);
 
 		// The DebugMessenger should only be destroyed if it was created in the first place.
 		if (enableValidationLayers)
 		{
-			DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
+			DestroyDebugUtilsMessengerEXT(instance_, debugMessenger_, nullptr);
 		}
 
-		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
-		vkDestroyInstance(m_instance, nullptr);
+		vkDestroySurfaceKHR(instance_, surface_, nullptr);
+		vkDestroyInstance(instance_, nullptr);
 	}
 
 	/// <summary>
@@ -154,7 +154,7 @@ namespace phm
 		// Specift the vulkan API version.
 		appInfo.apiVersion = VK_API_VERSION_1_0;
 
-		// Create the m_instance create info
+		// Create the instance_ create info
 		VkInstanceCreateInfo createInfo{};
 		// Specify that this struct is the info to create the instance.
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -166,7 +166,7 @@ namespace phm
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());		// The number of enabled extensions
 		createInfo.ppEnabledExtensionNames = extensions.data();								// The names of the actual extensions
 
-		// create a temporary debugger for creation of the Vulkan m_instance
+		// create a temporary debugger for creation of the Vulkan instance_
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 		// check if validation layers are enabled.
 		if (enableValidationLayers)
@@ -207,11 +207,11 @@ namespace phm
 		}*/
 
 
-		// Finally, create the m_instance
-		if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
+		// Finally, create the instance_
+		if (vkCreateInstance(&createInfo, nullptr, &instance_) != VK_SUCCESS)
 		{
 			// If the instance failed to be created, throw a runtime error.
-			throw std::runtime_error("failed to create m_instance!");
+			throw std::runtime_error("failed to create instance_!");
 		}
 
 		// TODO: WHAT DOES THIS DO?
@@ -225,7 +225,7 @@ namespace phm
 	{
 		// Find the number of physical devices that support vulkan.
 		uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(instance_, &deviceCount, nullptr);
 
 		// Check if any of the graphics cards support vulkan.
 		if (deviceCount == 0)
@@ -235,7 +235,7 @@ namespace phm
 
 		// Store the physical handles in an array
 		std::vector<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
+		vkEnumeratePhysicalDevices(instance_, &deviceCount, devices.data());
 
 
 		// Use an ordered map to automatically sort candidates by increasing score
@@ -258,7 +258,7 @@ namespace phm
 		// Check if the best candidate is suitable at all
 		if (candidates.rbegin()->first > 0)
 		{
-			m_physicalDevice = candidates.rbegin()->second;
+			physicalDevice_ = candidates.rbegin()->second;
 		}
 		else
 		{
@@ -272,7 +272,7 @@ namespace phm
 	void PhmDevice::createLogicalDevice()
 	{
 		// Get the queue family indices
-		QueueFamilyIndices indices = findQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices indices = findQueueFamilies(physicalDevice_);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -319,15 +319,15 @@ namespace phm
 		}
 
 		// Try to create the logical device
-		if (vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device) != VK_SUCCESS)
+		if (vkCreateDevice(physicalDevice_, &createInfo, nullptr, &device_) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create logical device!");
 		}
 
 		// Set the graphics queue
-		vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
+		vkGetDeviceQueue(device_, indices.graphicsFamily.value(), 0, &graphicsQueue_);
 		// Set the presentation queue
-		vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentQueue);
+		vkGetDeviceQueue(device_, indices.presentFamily.value(), 0, &presentQueue_);
 	}
 
 	/// <summary>
@@ -349,7 +349,7 @@ namespace phm
 			VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 		// Try to create the command pool.
-		if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS)
+		if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool_) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create command pool!");
 		}
@@ -358,7 +358,7 @@ namespace phm
 	/// <summary>
 	/// Method for initiating the surface member. Uses the window and instance members.
 	/// </summary>
-	void PhmDevice::createSurface() { m_window.createWindowSurface(m_instance, &m_surface); }
+	void PhmDevice::createSurface() { window_.createWindowSurface(instance_, &surface_); }
 
 	/// <summary>
 	/// Checks if a physical device (GPU) is suitable for use.
@@ -427,7 +427,7 @@ namespace phm
 		populateDebugMessengerCreateInfo(createInfo);
 
 		// Try to create the debug messenger. Throw a runtime error if it failed.
-		if (CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger) != VK_SUCCESS)
+		if (CreateDebugUtilsMessengerEXT(instance_, &createInfo, nullptr, &debugMessenger_) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to set up debug messenger!");
 		}
@@ -595,7 +595,7 @@ namespace phm
 		{
 			VkBool32 presentSupport = false;
 			// Get the surface support of the device
-			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_surface, &presentSupport);
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
 
 			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
@@ -626,28 +626,28 @@ namespace phm
 		SwapChainSupportDetails details;
 
 		// Get the surface capabilities of the physical device
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_surface, &details.capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
 		// Get the format count
 		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
 
 		// if the format count isn't 0, resize the format list and insert the format details.
 		if (formatCount != 0)
 		{
 			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &formatCount, details.formats.data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
 		}
 
 		// Get the present mode count
 		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, nullptr);
 
 		// if the present mode count isn't 0, resize the mode list and populate it.
 		if (presentModeCount != 0)
 		{
 			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_surface, &presentModeCount, details.presentModes.data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, details.presentModes.data());
 		}
 
 		return details;
@@ -660,7 +660,7 @@ namespace phm
 		for (VkFormat format : candidates)
 		{
 			VkFormatProperties props;
-			vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &props);
+			vkGetPhysicalDeviceFormatProperties(physicalDevice_, format, &props);
 
 			if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
 			{
@@ -685,7 +685,7 @@ namespace phm
 	{
 		// Get the memory properties of the physical device
 		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice_, &memProperties);
 
 		// Iterate through the memory types retrieved
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
@@ -728,7 +728,7 @@ namespace phm
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		// Attempt to create the buffer.
-		if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+		if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create buffer!");
 		}
@@ -736,7 +736,7 @@ namespace phm
 		// Allocate memory on the physical device and bind the buffer to the memory 
 		// (The buffer is CPU side, so the memory has to be synced to the GPU visible memory)
 		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(m_device, buffer, &memRequirements);
+		vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
 
 		// Create the allocation info struct.
 		VkMemoryAllocateInfo allocInfo{};
@@ -745,13 +745,13 @@ namespace phm
 		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
 		// Attempt to allocate memory on the physical device.
-		if (vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+		if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to allocate buffer memory!");
 		}
 
 		// Bind the created buffer to the allocated memory without any offset. Memory management for creating offsets will be added later.
-		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
+		vkBindBufferMemory(device_, buffer, bufferMemory, 0);
 	}
 
 	/// <summary>
@@ -763,11 +763,11 @@ namespace phm
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = m_commandPool;
+		allocInfo.commandPool = commandPool_;
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(m_device, &allocInfo, &commandBuffer);
+		vkAllocateCommandBuffers(device_, &allocInfo, &commandBuffer);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -791,11 +791,11 @@ namespace phm
 		submitInfo.pCommandBuffers = &commandBuffer;
 
 		// Submit the command buffer.
-		vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(m_graphicsQueue);
+		vkQueueSubmit(graphicsQueue_, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(graphicsQueue_);
 
 		// Then destroy the command buffer right after.
-		vkFreeCommandBuffers(m_device, m_commandPool, 1, &commandBuffer);
+		vkFreeCommandBuffers(device_, commandPool_, 1, &commandBuffer);
 	}
 
 	/// <summary>
@@ -877,14 +877,14 @@ namespace phm
 		VkDeviceMemory& imageMemory)
 	{
 		// First. Attemt to create the image itself. 
-		if (vkCreateImage(m_device, &imageInfo, nullptr, &image) != VK_SUCCESS)
+		if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create image!");
 		}
 
 		// Get the memory requirements.
 		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(m_device, image, &memRequirements);
+		vkGetImageMemoryRequirements(device_, image, &memRequirements);
 
 		// Create the memory allocation info and populate it.
 		VkMemoryAllocateInfo allocInfo{};
@@ -894,12 +894,12 @@ namespace phm
 		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
 		// Attempt to allocate the memory.
-		if (vkAllocateMemory(m_device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+		if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to allocate image memory!");
 		}
 		// Attempt to bind the memory to the image.
-		if (vkBindImageMemory(m_device, image, imageMemory, 0) != VK_SUCCESS)
+		if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to bind image memory!");
 		}

@@ -44,24 +44,24 @@ namespace phm
 
 		// Not copyable or movable
 		PhmDevice(const PhmDevice&) = delete;
-		void operator=(const PhmDevice&) = delete;
+		PhmDevice& operator=(const PhmDevice&) = delete;
 		PhmDevice(PhmDevice&&) = delete;
 		PhmDevice& operator=(PhmDevice&&) = delete;
 
-		VkCommandPool getCommandPool() { return m_commandPool; }
-		VkDevice device() { return m_device; }
-		VkSurfaceKHR surface() { return m_surface; }
-		VkQueue graphicsQueue() { return m_graphicsQueue; }
-		VkQueue presentQueue() { return m_presentQueue; }
+		VkCommandPool getCommandPool() { return commandPool_; }
+		VkDevice device() { return device_; }
+		VkSurfaceKHR surface() { return surface_; }
+		VkQueue graphicsQueue() { return graphicsQueue_; }
+		VkQueue presentQueue() { return presentQueue_; }
 
-		inline SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_physicalDevice); }
+		inline SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice_); }
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 		/// <summary>
 		/// Gets the QueueFamilyIndices from the attached physical device.
 		/// </summary>
 		/// <returns>QueueFamilyIndices</returns>
-		inline QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(m_physicalDevice); }
+		inline QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice_); }
 		VkFormat findSupportedFormat(
 			const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
@@ -105,16 +105,16 @@ namespace phm
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
-		VkInstance m_instance;
-		VkDebugUtilsMessengerEXT m_debugMessenger;
-		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
-		PhmWindow& m_window;
-		VkCommandPool m_commandPool;
+		VkInstance instance_;
+		VkDebugUtilsMessengerEXT debugMessenger_;
+		VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
+		PhmWindow& window_;
+		VkCommandPool commandPool_;
 
-		VkDevice m_device;
-		VkSurfaceKHR m_surface;
-		VkQueue m_graphicsQueue;
-		VkQueue m_presentQueue;
+		VkDevice device_;
+		VkSurfaceKHR surface_;
+		VkQueue graphicsQueue_;
+		VkQueue presentQueue_;
 
 		const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 		const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };

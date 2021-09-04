@@ -35,48 +35,48 @@ namespace phm
 
 
 	PhmModel::PhmModel(PhmDevice& device, const std::vector<Vertex>& vertices)
-		: m_device(device)
+		: device_(device)
 	{
 		createVertexBuffers(vertices);
 	}
 
 	PhmModel::~PhmModel()
 	{
-		vkDestroyBuffer(m_device.device(), m_vertexBuffer, nullptr);
-		vkFreeMemory(m_device.device(), m_vertexBufferMemory, nullptr);
+		vkDestroyBuffer(device_.device(), vertexBuffer_, nullptr);
+		vkFreeMemory(device_.device(), vertexBufferMemory_, nullptr);
 	}
 
 	void PhmModel::bind(VkCommandBuffer commandBuffer)
 	{
-		VkBuffer buffers[] = { m_vertexBuffer };
+		VkBuffer buffers[] = { vertexBuffer_ };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 	}
 
 	void PhmModel::draw(VkCommandBuffer commandBuffer)
 	{
-		vkCmdDraw(commandBuffer, m_vertexCount, 1, 0, 0);
+		vkCmdDraw(commandBuffer, vertexCount_, 1, 0, 0);
 	}
 
 	void PhmModel::createVertexBuffers(const std::vector<Vertex>& vertices)
 	{
-		m_vertexCount = static_cast<uint32_t>(vertices.size());
-		assert(m_vertexCount > 2 && "Vertex Count must be at least 3");
+		vertexCount_ = static_cast<uint32_t>(vertices.size());
+		assert(vertexCount_ > 2 && "Vertex Count must be at least 3");
 
-		VkDeviceSize bufferSize = sizeof(vertices[0]) * m_vertexCount;
+		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount_;
 
-		m_device.createBuffer(
+		device_.createBuffer(
 			bufferSize,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			m_vertexBuffer,
-			m_vertexBufferMemory
+			vertexBuffer_,
+			vertexBufferMemory_
 		);
 
 		void* data;
-		vkMapMemory(m_device.device(), m_vertexBufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(device_.device(), vertexBufferMemory_, 0, bufferSize, 0, &data);
 		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(m_device.device(), m_vertexBufferMemory);
+		vkUnmapMemory(device_.device(), vertexBufferMemory_);
 	}
 
 }

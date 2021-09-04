@@ -15,8 +15,8 @@ namespace phm
 	{
 
 	public:
-		static constexpr size_t WIDTH = 800*2;
-		static constexpr size_t HEIGHT = 600*2;
+		static constexpr size_t WIDTH = 800;
+		static constexpr size_t HEIGHT = 600;
 
 		Application();
 		~Application();
@@ -27,20 +27,22 @@ namespace phm
 		void run();
 
 	private:
-		PhmWindow m_window{ WIDTH, HEIGHT, "Triangle" };
-		PhmDevice m_device{ m_window };
-		PhmSwapchain m_swapchain{ m_device, m_window.getExtent() };
-		std::unique_ptr<PhmPipeline> m_pipeline;
-		VkPipelineLayout m_pipelineLayout;
-		std::vector<VkCommandBuffer> m_commandBuffers;
-		std::unique_ptr<PhmModel> m_model; // TEMP
+		PhmWindow window_{ WIDTH, HEIGHT, "Triangle" };
+		PhmDevice device_{ window_ };
+		std::unique_ptr<PhmSwapchain> swapchain_;
+		std::unique_ptr<PhmPipeline> pipeline_;
+		VkPipelineLayout pipelineLayout_;
+		std::vector<VkCommandBuffer> commandBuffers_;
+		std::unique_ptr<PhmModel> model_; // TEMP
 
 		void loadModels(); // TEMP
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
-
+		void recreateSwapchain();
+		void recordCommandBuffer(size_t imageIndex);
 
 	};
 }

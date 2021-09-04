@@ -15,16 +15,16 @@ namespace phm
 		const std::string& fragFilePath,
 		const PipelineConfigInfo& configInfo
 	)
-		: m_device(device)
+		: device_(device)
 	{
 		createGraphicsPipeline(vertFilePath, fragFilePath, configInfo);
 	}
 
 	PhmPipeline::~PhmPipeline()
 	{
-		vkDestroyShaderModule(m_device.device(), m_vertexShaderModule, nullptr);
-		vkDestroyShaderModule(m_device.device(), m_fragmentShaderModule, nullptr);
-		vkDestroyPipeline(m_device.device(), m_graphicsPipeline, nullptr);
+		vkDestroyShaderModule(device_.device(), vertexShaderModule_, nullptr);
+		vkDestroyShaderModule(device_.device(), fragmentShaderModule_, nullptr);
+		vkDestroyPipeline(device_.device(), graphicsPipeline_, nullptr);
 	}
 
 	void PhmPipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo)
@@ -42,14 +42,14 @@ namespace phm
 		std::vector<char> vertCode = readFile(vertFilePath);
 		std::vector<char> fragCode = readFile(fragFilePath);
 
-		createShaderModule(vertCode, &m_vertexShaderModule);
-		createShaderModule(fragCode, &m_fragmentShaderModule);
+		createShaderModule(vertCode, &vertexShaderModule_);
+		createShaderModule(fragCode, &fragmentShaderModule_);
 
 		VkPipelineShaderStageCreateInfo shaderStages[2];
 		// Specify the vertex shader
 		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-		shaderStages[0].module = m_vertexShaderModule;
+		shaderStages[0].module = vertexShaderModule_;
 		shaderStages[0].pName = "main";
 		shaderStages[0].flags = 0;
 		shaderStages[0].pNext = nullptr;
@@ -58,7 +58,7 @@ namespace phm
 		// Specify the fragment shader
 		shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		shaderStages[1].module = m_fragmentShaderModule;
+		shaderStages[1].module = fragmentShaderModule_;
 		shaderStages[1].pName = "main";
 		shaderStages[1].flags = 0;
 		shaderStages[1].pNext = nullptr;
@@ -75,14 +75,6 @@ namespace phm
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
-		// Initiate the viewportInfo
-		VkPipelineViewportStateCreateInfo viewportInfo{};
-		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		viewportInfo.viewportCount = 1;
-		viewportInfo.pViewports = &configInfo.viewport;
-		viewportInfo.scissorCount = 1;
-		viewportInfo.pScissors = &configInfo.scissor;
-		
 		// Create the actual pipeline creation info.
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -90,12 +82,12 @@ namespace phm
 		pipelineInfo.pStages = shaderStages;
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineInfo.pViewportState = &viewportInfo;
+		pipelineInfo.pViewportState = &configInfo.viewportInfo;
 		pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
 		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
 		pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
-		pipelineInfo.pDynamicState = nullptr;
+		pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;
 
 		pipelineInfo.layout = configInfo.pipelineLayout;
 		pipelineInfo.renderPass = configInfo.renderPass;
@@ -104,7 +96,7 @@ namespace phm
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(m_device.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(device_.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline_) != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to create graphics pipeline");
 		}
@@ -144,7 +136,7 @@ namespace phm
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-		if (vkCreateShaderModule(m_device.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
+		if (vkCreateShaderModule(device_.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to create shader module");
 		}
@@ -152,14 +144,14 @@ namespace phm
 
 	void PhmPipeline::bind(VkCommandBuffer commandBuffer)
 	{
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_);
 	}
 
 	/// <summary>
 	/// Takes in a reference to a configInfo object and writes default values to it.
 	/// </summary>
 	/// <param name="configInfo">The reference to be written to. </param>
-	void phm::PhmPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height)
+	void phm::PhmPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 	{
 		// Initiate the input assembly info.
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -168,19 +160,12 @@ namespace phm
 		// Must be false for the topology.
 		configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-
-		// TODO: Make a demo to change these values while the app is runnning.
-		// Initiate the viewport
-		configInfo.viewport.x = 0.0f;
-		configInfo.viewport.y = 0.0f;
-		configInfo.viewport.width = static_cast<float>(width);
-		configInfo.viewport.height = static_cast<float>(height);
-		configInfo.viewport.minDepth = 0.0f;
-		configInfo.viewport.maxDepth = 1.0f;
-
-		// Initiate scissor
-		configInfo.scissor.offset = { 0, 0 };
-		configInfo.scissor.extent = { width, height };
+		// Initiate the viewport info
+		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		configInfo.viewportInfo.viewportCount = 1;
+		configInfo.viewportInfo.pViewports = nullptr;
+		configInfo.viewportInfo.scissorCount = 1;
+		configInfo.viewportInfo.pScissors = nullptr;
 
 		// Initiate the rasterization info
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -238,5 +223,12 @@ namespace phm
 		configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
 		configInfo.depthStencilInfo.front = {};
 		configInfo.depthStencilInfo.back = {};
+
+		// Initiate the dynamic state info
+		configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+		configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+		configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
+		configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
+		configInfo.dynamicStateInfo.flags = 0;
 	}
 } // namespace phm

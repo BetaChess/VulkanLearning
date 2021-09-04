@@ -39,10 +39,10 @@ namespace phm
 		void draw(VkCommandBuffer commandBuffer);
 
 	private:
-		PhmDevice& m_device;
-		VkBuffer m_vertexBuffer;
-		VkDeviceMemory m_vertexBufferMemory;
-		uint32_t m_vertexCount;
+		PhmDevice& device_;
+		VkBuffer vertexBuffer_;
+		VkDeviceMemory vertexBufferMemory_;
+		uint32_t vertexCount_;
 
 		void createVertexBuffers(const std::vector<Vertex>& vertices);
 	};

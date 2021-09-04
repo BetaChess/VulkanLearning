@@ -22,20 +22,26 @@ namespace phm
 		~PhmWindow();
 
 		// Public methods
-		inline bool shouldClose() { return glfwWindowShouldClose(m_window); };
-		VkExtent2D getExtent() { return { static_cast<uint32_t>(m_width), static_cast<uint32_t>(m_height) }; }
+		inline bool shouldClose() { return glfwWindowShouldClose(window_); };
+		VkExtent2D getExtent() { return { static_cast<uint32_t>(width_), static_cast<uint32_t>(height_) }; }
+		inline bool wasWindowResized() { return frameBufferResized_; };
+		void resetWindowResizedFlag() { frameBufferResized_ = false; };
 
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 	private:
 		// Private members
-		GLFWwindow* m_window;
-		size_t m_width, m_height;
-		std::string m_windowName;
+		GLFWwindow* window_;
+		std::string windowName_;
+
+		size_t width_, height_;
+		bool frameBufferResized_ = false;
 
 		// Private methods
 		void initWindow();
 
+		// Static
+		static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 	};
 }
 
