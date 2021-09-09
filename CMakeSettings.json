@@ -7,7 +7,30 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "GLFW_BUILD_DOCS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "configurationType": "Debug",
+      "ctestCommandArgs": "",
+      "generator": "Ninja",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "name": "x64-Debug-WITH-INFO",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug_with_info",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x64-Release",
@@ -18,8 +41,7 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": []
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     }
   ]
 }
