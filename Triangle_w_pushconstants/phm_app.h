@@ -1,13 +1,14 @@
 #ifndef PHM_APP_H
 #define PHM_APP_H
 
+#include <memory>
+#include <vector>
+
 #include "phm_window.h"
 #include "phm_pipeline.h"
 #include "phm_swapchain.h"
-#include "phm_model.h"
+#include "phm_object.h"
 
-#include <memory>
-#include <vector>
 
 namespace phm
 {
@@ -33,9 +34,9 @@ namespace phm
 		std::unique_ptr<PhmPipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 		std::vector<VkCommandBuffer> commandBuffers_;
-		std::unique_ptr<PhmModel> model_; // TEMP
+		std::vector<PhmObject> objects_; // TEMP
 
-		void loadModels(); // TEMP
+		void loadObjects(); // TEMP
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -43,6 +44,7 @@ namespace phm
 		void drawFrame();
 		void recreateSwapchain();
 		void recordCommandBuffer(size_t imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 	};
 }

@@ -1,11 +1,13 @@
 #ifndef PHM_DEVICE_H
 #define PHM_DEVICE_H
 
-#include "phm_window.h"
 
 #include <string>
 #include <vector>
 #include <optional>
+
+#include "phm_window.h"
+
 
 namespace phm
 {

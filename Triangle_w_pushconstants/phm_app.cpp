@@ -3,6 +3,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include <stdexcept>
 #include <array>
@@ -104,13 +105,14 @@ namespace phm
 {
 	struct SimplePushConstantData
 	{
+		glm::mat2 transform{ 1.0f };
 		glm::vec2 offset;
 		alignas(16) glm::vec3 color;
 	};
 
 	Application::Application()
 	{
-		loadModels();
+		loadObjects();
 		createPipelineLayout();
 		recreateSwapchain(); // Calls createPipeline()
 		createCommandBuffers();
@@ -154,7 +156,7 @@ namespace phm
 		}
 	}
 
-	void Application::loadModels()
+	void Application::loadObjects()
 	{
 		/*std::vector<PhmModel::Vertex> vertices
 		{
@@ -169,7 +171,16 @@ namespace phm
 				{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 			} }, 6);
 
-		model_ = std::make_unique<PhmModel>(device_, vertices);
+		auto model = std::make_shared<PhmModel>(device_, vertices);
+
+		PhmObject obj{};
+		obj.model = model;
+		obj.color = { 0.1f, 0.8f,0.1f };
+		obj.transform.translation.x = 0.2f;
+		obj.transform.scale = { 1.5f, 0.75f };
+		obj.transform.setRotation(0.05f * glm::two_pi<float>());
+
+		objects_.push_back(std::move(obj));
 	}
 
 	void Application::createPipeline()
@@ -291,28 +302,38 @@ namespace phm
 		scissor.extent = swapchain_->getSwapChainExtent();
 		vkCmdSetScissor(commandBuffers_[imageIndex], 0, 1, &scissor);
 
-		pipeline_->bind(commandBuffers_[imageIndex]);
-		model_->bind(commandBuffers_[imageIndex]);
 
-		for (size_t i = 0; i < 4; i++)
-		{
-			SimplePushConstantData push{};
-			push.offset = { 0.0f, -0.4f + i * 0.25f };
-			push.color = { 0.0f, 0.0f, 0.2f + i * 0.2f };
-			vkCmdPushConstants(
-				commandBuffers_[imageIndex],
-				pipelineLayout_,
-				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-				0,
-				sizeof(SimplePushConstantData),
-				&push);
-			model_->draw(commandBuffers_[imageIndex]);
-		}
+		renderGameObjects(commandBuffers_[imageIndex]);
+
 
 		vkCmdEndRenderPass(commandBuffers_[imageIndex]);
 		if (vkEndCommandBuffer(commandBuffers_[imageIndex]) != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to end recording command buffer");
+		}
+	}
+
+	void Application::renderGameObjects(VkCommandBuffer commandBuffer)
+	{
+		pipeline_->bind(commandBuffer);
+
+		for (auto& obj : objects_)
+		{
+			SimplePushConstantData push{};
+			push.offset = obj.transform.translation;
+			push.color = obj.color;
+			push.transform = obj.transform.mat2();
+
+			vkCmdPushConstants(
+				commandBuffer,
+				pipelineLayout_,
+				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+				0,
+				sizeof(SimplePushConstantData),
+				&push);
+			obj.model->bind(commandBuffer);
+			obj.model->draw(commandBuffer);
+
 		}
 	}
 
