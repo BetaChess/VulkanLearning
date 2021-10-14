@@ -16,8 +16,9 @@ endif()
 
 
 # Include sub-projects.
-add_subdirectory ("Triangle")
-add_subdirectory ("Triangle_w_pushconstants")
+add_subdirectory ("Triangle_1")
+add_subdirectory ("Triangle_2_pushconstants")
+add_subdirectory ("Triangle_3_restructured")
 add_subdirectory ("vendor/glfw")
 add_subdirectory ("vendor/glm")
 
