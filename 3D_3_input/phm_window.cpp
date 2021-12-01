@@ -2,7 +2,6 @@
 #include "phm_window.h"
 
 #include <stdexcept>
-#include <iostream>
 
 namespace phm
 {
@@ -18,6 +17,7 @@ namespace phm
 		glfwDestroyWindow(window_);
 		// Terminate GLFW
 		glfwTerminate();
+
 	}
 
 	void PhmWindow::initWindow()

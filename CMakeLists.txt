@@ -12,6 +12,11 @@ endif()
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug_with_info")
 	add_compile_definitions("DEBUGWITHINFO")
+	add_compile_definitions("DEBUGADDITIONAL")
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES "Debug_additional")
+	add_compile_definitions("DEBUGADDITIONAL")
 endif()
 
 
@@ -22,6 +27,7 @@ add_subdirectory ("Triangle_3_restructured")
 add_subdirectory ("Triangle_4_homogeneous")
 add_subdirectory ("3D_1")
 add_subdirectory ("3D_2_perspective")
+add_subdirectory ("3D_3_input")
 add_subdirectory ("vendor/glfw")
 add_subdirectory ("vendor/glm")
 

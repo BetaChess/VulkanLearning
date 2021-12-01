@@ -17,6 +17,27 @@
       ]
     },
     {
+      "name": "x64-Debug-Additional",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "GLFW_BUILD_DOCS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug_additional",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "configurationType": "Debug",
       "ctestCommandArgs": "",
@@ -25,6 +46,11 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "name": "x64-Debug-WITH-INFO",
       "variables": [
+        {
+          "name": "GLFW_BUILD_DOCS",
+          "value": "False",
+          "type": "BOOL"
+        },
         {
           "name": "CMAKE_BUILD_TYPE",
           "value": "Debug_with_info",
