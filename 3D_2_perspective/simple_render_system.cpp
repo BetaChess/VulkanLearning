@@ -74,20 +74,20 @@ namespace phm
 
 	}
 
-	void SimpleRenderSystem::renderGameObjects(
+	void SimpleRenderSystem::renderObjects(
 		VkCommandBuffer commandBuffer, 
-		/*make const later*/ std::vector<PhmObject>& objects, 
+		const std::vector<PhmObject>& objects, 
 		const PhmCamera& camera)
 	{
 		pipeline_->bind(commandBuffer);
 
+		auto projectionView = camera.getProjection() * camera.getView();
+
 		for (auto& obj : objects)
 		{
-			obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + glm::quarter_pi<float>() * Time::deltaTime(), glm::two_pi<float>());
-
 			SimplePushConstantData push{};
 			push.color = obj.color;
-			push.transform = camera.getProjection() * obj.transform.mat4();
+			push.transform = projectionView * obj.transform.mat4();
 
 
 			vkCmdPushConstants(

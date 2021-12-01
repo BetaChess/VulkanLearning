@@ -97,7 +97,7 @@ namespace phm
 			if (commandBuffer != nullptr)
 			{
 				renderer_.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, objects_);
+				simpleRenderSystem.renderObjects(commandBuffer, objects_);
 				renderer_.endSwapChainRenderPass(commandBuffer);
 				renderer_.endFrame();
 			}

@@ -5,15 +5,15 @@
 class Time
 {
 public:
-	static inline float deltaTime() { return Time::s_deltaTime_; };
+	inline float deltaTime() { return Time::deltaTime_; };
 
-	static void updateTime(); // SHOULD ONLY BE RUN ONCE PER FRAME!
+	void updateTime(); // SHOULD ONLY BE RUN ONCE PER FRAME!
 
 private:
-	static std::chrono::steady_clock clock;
+	std::chrono::steady_clock clock_;
 
-	static float s_deltaTime_;
-	static std::chrono::steady_clock::time_point s_current_time_;
+	float deltaTime_ = 0;
+	std::chrono::steady_clock::time_point current_time_ = Time::clock_.now();
 };
 
 

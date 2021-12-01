@@ -74,7 +74,7 @@ namespace phm
 
 	}
 
-	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, /*make const later*/ std::vector<PhmObject>& objects)
+	void SimpleRenderSystem::renderObjects(VkCommandBuffer commandBuffer, /*make const later*/ std::vector<PhmObject>& objects)
 	{
 		pipeline_->bind(commandBuffer);
 

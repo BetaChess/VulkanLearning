@@ -44,7 +44,7 @@ namespace phm
 		void drawFrame();
 		void recreateSwapchain();
 		void recordCommandBuffer(size_t imageIndex);
-		void renderGameObjects(VkCommandBuffer commandBuffer);
+		void renderObjects(VkCommandBuffer commandBuffer);
 
 	};
 }

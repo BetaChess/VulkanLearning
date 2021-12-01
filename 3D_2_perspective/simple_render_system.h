@@ -21,9 +21,9 @@ namespace phm
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(
+		void renderObjects(
 			VkCommandBuffer commandBuffer, 
-			std::vector<PhmObject>& objects, 
+			const std::vector<PhmObject>& objects, 
 			const PhmCamera& camera);
 
 	private:

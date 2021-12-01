@@ -87,6 +87,9 @@ namespace phm
 	{
 		SimpleRenderSystem simpleRenderSystem{ device_, renderer_.getSwapChainRenderPass() };
 		PhmCamera camera{};
+		//camera.setViewDirection(glm::vec3(0.0f), glm::vec3(0.5f, 0.0f, 1.0f));
+
+		Time time;
 
 		while (!window_.shouldClose())
 		{
@@ -97,7 +100,7 @@ namespace phm
 			camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
 			
 
-			Time::updateTime();
+			time.updateTime();
 
 			// BeginFrame returns a nullptr if the swapchain needs to be recreated. 
 			// This skips the frame draw call, if that's the case.
@@ -105,7 +108,7 @@ namespace phm
 			if (commandBuffer != nullptr)
 			{
 				renderer_.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, objects_, camera);
+				simpleRenderSystem.renderObjects(commandBuffer, objects_, camera);
 				renderer_.endSwapChainRenderPass(commandBuffer);
 				renderer_.endFrame();
 			}

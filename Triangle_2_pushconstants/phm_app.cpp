@@ -303,7 +303,7 @@ namespace phm
 		vkCmdSetScissor(commandBuffers_[imageIndex], 0, 1, &scissor);
 
 
-		renderGameObjects(commandBuffers_[imageIndex]);
+		renderObjects(commandBuffers_[imageIndex]);
 
 
 		vkCmdEndRenderPass(commandBuffers_[imageIndex]);
@@ -313,7 +313,7 @@ namespace phm
 		}
 	}
 
-	void Application::renderGameObjects(VkCommandBuffer commandBuffer)
+	void Application::renderObjects(VkCommandBuffer commandBuffer)
 	{
 		pipeline_->bind(commandBuffer);
 
