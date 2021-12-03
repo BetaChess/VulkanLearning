@@ -105,7 +105,7 @@ namespace phm
 
 			float aspect = renderer_.getAspectRatio();
 			camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
-
+			
 			// BeginFrame returns a nullptr if the swapchain needs to be recreated. 
 			// This skips the frame draw call, if that's the case.
 			auto commandBuffer = renderer_.beginFrame();
