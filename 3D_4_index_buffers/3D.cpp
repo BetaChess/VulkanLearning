@@ -1,7 +1,4 @@
-﻿//
-// Program entry point
-//
-
+﻿#include "pch.h"
 
 #include "phm_app.h"
 

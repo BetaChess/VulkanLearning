@@ -5,7 +5,6 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("VulkanLearning")
 
-
 if (WIN32)
 	add_compile_definitions("PLATFORM_WINDOWS")
 endif()
@@ -28,6 +27,6 @@ add_subdirectory ("Triangle_4_homogeneous")
 add_subdirectory ("3D_1")
 add_subdirectory ("3D_2_perspective")
 add_subdirectory ("3D_3_input")
+add_subdirectory ("3D_4_index_buffers")
 add_subdirectory ("vendor/glfw")
 add_subdirectory ("vendor/glm")
-
