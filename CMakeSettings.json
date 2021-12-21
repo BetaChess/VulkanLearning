@@ -29,13 +29,9 @@
           "name": "GLFW_BUILD_DOCS",
           "value": "False",
           "type": "BOOL"
-        },
-        {
-          "name": "CMAKE_BUILD_TYPE",
-          "value": "Debug_additional",
-          "type": "STRING"
         }
-      ]
+      ],
+      "cmakeCommandArgs": "-DDEBUGADDITIONAL=1"
     },
     {
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -50,13 +46,9 @@
           "name": "GLFW_BUILD_DOCS",
           "value": "False",
           "type": "BOOL"
-        },
-        {
-          "name": "CMAKE_BUILD_TYPE",
-          "value": "Debug_with_info",
-          "type": "STRING"
         }
-      ]
+      ],
+      "cmakeCommandArgs": "-DDEBUGWITHINFO=1"
     },
     {
       "name": "x64-Release",
