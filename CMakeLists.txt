@@ -20,6 +20,7 @@ endif()
 
 
 # Include sub-projects.
+# Include sub-projects.
 add_subdirectory ("Triangle_1")
 add_subdirectory ("Triangle_2_pushconstants")
 add_subdirectory ("Triangle_3_restructured")
@@ -31,5 +32,6 @@ add_subdirectory ("3D_4_index_buffers")
 add_subdirectory ("3D_5_directional_vertex_light")
 add_subdirectory ("3D_6_uniform")
 add_subdirectory ("3D_7_point_light")
+add_subdirectory ("3D_8_billboards")
 add_subdirectory ("vendor/glfw")
 add_subdirectory ("vendor/glm")
