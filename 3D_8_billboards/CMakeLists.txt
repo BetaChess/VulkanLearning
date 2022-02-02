@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project(3D_billboards)
+project(3D_8_billboards)
 
 #message("${TEST}")
 

@@ -3,11 +3,37 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project(3D_perspective)
+project(3D_2_perspective)
 
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME} "3D.cpp" "phm_model.h" "phm_model.cpp" "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp" "phm_model.h" "phm_model.cpp" "phm_object.h" "phm_renderer.h" "phm_renderer.cpp" "simple_render_system.h" "simple_render_system.cpp" "time.h" "time.cpp" "phm_camera.h" "phm_camera.cpp")
 
+# Add source groups
+source_group("Render Systems" FILES 
+	"simple_render_system.cpp"
+	"simple_render_system.h"
+)
+
+source_group("Vulkan" FILES
+    "phm_swapchain.h" 
+    "phm_swapchain.cpp" 
+    "phm_pipeline.h" 
+    "phm_pipeline.cpp" 
+    "phm_device.h" 
+    "phm_device.cpp" 
+)
+
+source_group("Engine" FILES
+    "phm_camera.cpp"
+    "phm_camera.h"
+    "phm_model.cpp"
+    "phm_model.h"
+    "phm_object.h"
+    "phm_renderer.cpp"
+    "phm_renderer.h"
+    "time.cpp"
+    "time.h"
+)
 
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES
