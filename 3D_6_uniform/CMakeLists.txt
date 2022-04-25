@@ -3,11 +3,48 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project(3D_uniform)
+project(3D_6_uniform)
 
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME} "3D.cpp" "phm_model.h" "phm_model.cpp" "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp" "phm_model.h" "phm_model.cpp" "phm_object.h" "phm_renderer.h" "phm_renderer.cpp" "simple_render_system.h" "simple_render_system.cpp" "time.h" "time.cpp" "phm_camera.h" "phm_camera.cpp" "phm_keyboardController.h" "phm_keyboardController.cpp" "pch.h" "phm_utils.h" "phm_object.cpp" "phm_buffer.h" "phm_buffer.cpp"  "phm_frame_info.h" "phm_descriptor.h" "phm_descriptor.cpp")
 
+# Add source groups
+source_group("Render Systems" FILES 
+	"simple_render_system.cpp"
+	"simple_render_system.h"
+)
+
+source_group("Input" FILES
+    "phm_keyboardController.cpp"
+    "phm_keyboardController.h"
+)
+
+source_group("Vulkan" FILES
+    "phm_swapchain.h" 
+    "phm_swapchain.cpp" 
+    "phm_pipeline.h" 
+    "phm_pipeline.cpp" 
+    "phm_device.h" 
+    "phm_device.cpp" 
+    "phm_buffer.h" 
+    "phm_buffer.cpp"  
+    "phm_descriptor.h" 
+    "phm_descriptor.cpp"
+)
+
+source_group("Engine" FILES
+    "phm_camera.cpp"
+    "phm_camera.h"
+    "phm_model.cpp"
+    "phm_model.h"
+    "phm_object.cpp"
+    "phm_object.h"
+    "phm_renderer.cpp"
+    "phm_renderer.h"
+    "phm_frame_info.h"
+    "time.cpp"
+    "time.h"
+)
 
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES
@@ -83,6 +120,7 @@ endforeach(GLSL)
  
 add_custom_target(
     ${PROJECT_NAME}_Shaders
+    SOURCES ${GLSL_SOURCE_FILES}
     DEPENDS ${SPIRV_BINARY_FILES}
 )
 

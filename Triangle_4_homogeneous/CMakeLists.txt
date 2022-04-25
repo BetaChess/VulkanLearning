@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project(Triangle_homogenous)
+project(Triangle_4_homogenous)
 
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME} "TriangleHomogeneous.cpp" "phm_model.h" "phm_model.cpp" "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp" "phm_model.h" "phm_model.cpp" "phm_object.h" "phm_renderer.h" "phm_renderer.cpp" "simple_render_system.h" "simple_render_system.cpp" )
@@ -66,6 +66,7 @@ endforeach(GLSL)
  
 add_custom_target(
     ${PROJECT_NAME}_Shaders
+    SOURCES ${GLSL_SOURCE_FILES}
     DEPENDS ${SPIRV_BINARY_FILES}
 )
 

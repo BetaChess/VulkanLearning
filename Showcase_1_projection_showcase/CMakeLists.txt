@@ -3,16 +3,65 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project(3D_7_point_light)
+project(Showcase_1_projection)
 
-# Add source to this project's executable.
-add_executable (${PROJECT_NAME} "3D.cpp" "phm_model.h" "phm_model.cpp" "phm_window.h" "phm_window.cpp" "phm_swapchain.h" "phm_swapchain.cpp" "phm_app.h" "phm_app.cpp" "phm_pipeline.h" "phm_pipeline.cpp" "phm_device.h" "phm_device.cpp" "phm_model.h" "phm_model.cpp" "phm_object.h" "phm_renderer.h" "phm_renderer.cpp" "simple_render_system.h" "simple_render_system.cpp" "time.h" "time.cpp" "phm_camera.h" "phm_camera.cpp" "phm_keyboardController.h" "phm_keyboardController.cpp" "pch.h" "phm_utils.h" "phm_object.cpp" "phm_buffer.h" "phm_buffer.cpp"  "phm_frame_info.h" "phm_descriptor.h" "phm_descriptor.cpp")
+#message("${TEST}")
 
+# Add source
+set(
+    SOURCES
+    "3D.cpp" 
+    "phm_model.h" 
+    "phm_model.cpp" 
+    "phm_window.h" 
+    "phm_window.cpp" 
+    "phm_swapchain.h" 
+    "phm_swapchain.cpp" 
+    "phm_app.h" 
+    "phm_app.cpp" 
+    "phm_pipeline.h" 
+    "phm_pipeline.cpp" 
+    "phm_device.h" 
+    "phm_device.cpp" 
+    "phm_model.h" 
+    "phm_model.cpp" 
+    "phm_object.h" 
+    "phm_renderer.h" 
+    "phm_renderer.cpp" 
+    "time.h" 
+    "time.cpp" 
+    "phm_camera.h" 
+    "phm_camera.cpp" 
+    "phm_keyboardController.h" 
+    "phm_keyboardController.cpp" 
+    "pch.h" 
+    "phm_utils.h" 
+    "phm_object.cpp" 
+    "phm_buffer.h" 
+    "phm_buffer.cpp"  
+    "phm_frame_info.h" 
+    "phm_descriptor.h" 
+    "phm_descriptor.cpp"
+    "point_light_system.cpp"
+	"simple_render_system.cpp"
+    "point_light_system.h"
+	"simple_render_system.h"
+    "frustum_render_system.cpp" 
+    "frustum_render_system.h"
+)
+
+# Add the executable
+message("${SOURCES}")
+add_executable (${PROJECT_NAME} ${SOURCES})
 
 # Add source groups
 source_group("Render Systems" FILES 
+    "point_light_system.cpp"
 	"simple_render_system.cpp"
+    "point_light_system.h"
 	"simple_render_system.h"
+    "frustum_render_system.cpp" 
+    "frustum_render_system.h"
 )
 
 source_group("Input" FILES
@@ -71,6 +120,7 @@ target_link_libraries(${PROJECT_NAME}
     vulkan-1
 )
 
+# Command to copy models to output folder
 add_custom_command(
          TARGET ${PROJECT_NAME} POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory              
@@ -78,13 +128,15 @@ add_custom_command(
          COMMENT "Copying models" VERBATIM 
          )
 
+# Adding debug PDB
 set_property(
     TARGET ${PROJECT_NAME}
     APPEND PROPERTY
         CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
+# Precompiled header
 target_precompile_headers(${PROJECT_NAME}
-    PRIVATE "pch.h"
+    PUBLIC "pch.h"
 )
 # TODO: Add tests and install targets if needed.
 
@@ -108,6 +160,8 @@ file(GLOB_RECURSE GLSL_SOURCE_FILES
   "${PROJECT_SOURCE_DIR}/shaders/*.frag"
   "${PROJECT_SOURCE_DIR}/shaders/*.vert"
 )
+
+message("${GLSL_SOURCE_FILES}")
  
 foreach(GLSL ${GLSL_SOURCE_FILES})
   get_filename_component(FILE_NAME ${GLSL} NAME)
