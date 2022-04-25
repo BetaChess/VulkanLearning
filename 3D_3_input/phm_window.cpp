@@ -29,7 +29,7 @@ namespace phm
 		// Make the window resizable.
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-		window_ = glfwCreateWindow(width_, height_, windowName_.c_str(), nullptr, nullptr);
+		window_ = glfwCreateWindow(static_cast<int>(width_), static_cast<int>(height_), windowName_.c_str(), nullptr, nullptr);
 		glfwSetWindowUserPointer(window_, this);
 		glfwSetFramebufferSizeCallback(window_, framebufferResizeCallback);
 	}

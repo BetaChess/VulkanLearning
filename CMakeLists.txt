@@ -18,6 +18,7 @@ if (DEBUGADDITIONAL)
 	add_compile_definitions("DEBUGADDITIONAL")
 endif()
 
+add_compile_options("/wd26812")
 
 # Include sub-projects.
 # Include sub-projects.

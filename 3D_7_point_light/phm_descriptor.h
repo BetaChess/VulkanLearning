@@ -40,7 +40,7 @@ namespace phm
 
 	private:
 		PhmDevice& device_;
-		VkDescriptorSetLayout descriptorSetLayout_;
+		VkDescriptorSetLayout descriptorSetLayout_{};
 		std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings_;
 
 		friend class PhmDescriptorWriter;

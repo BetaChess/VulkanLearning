@@ -34,7 +34,7 @@ namespace phm
         PhmDevice& device_, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings)
         : device_{ device_ }, bindings_{ bindings } {
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-        for (auto kv : bindings)
+        for (const auto& kv : bindings)
         {
             setLayoutBindings.push_back(kv.second);
         }
@@ -211,6 +211,6 @@ namespace phm
         {
             write.dstSet = set;
         }
-        vkUpdateDescriptorSets(pool_.device_.device(), writes_.size(), writes_.data(), 0, nullptr);
+        vkUpdateDescriptorSets(pool_.device_.device(), static_cast<uint32_t>(writes_.size()), writes_.data(), 0, nullptr);
     }
 }
