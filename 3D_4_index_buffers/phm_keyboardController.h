@@ -7,7 +7,7 @@
 
 namespace phm
 {
-	class PhmKeyboardController
+	class KeyboardController
 	{
 	public:
 		struct KeyMappings
@@ -24,7 +24,7 @@ namespace phm
 			int lookDown = GLFW_KEY_DOWN;
 		};
 
-		void moveInPlaneXZ(GLFWwindow* window, float dt, PhmObject& object);
+		void moveInPlaneXZ(GLFWwindow* window, float dt, Object& object);
 
 		KeyMappings keys{};
 		float moveSpeed{ 3.0f };

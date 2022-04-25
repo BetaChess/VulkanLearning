@@ -12,7 +12,7 @@
 
 namespace phm
 {
-	class PhmModel
+	class Model
 	{
 	public:
 
@@ -42,21 +42,21 @@ namespace phm
 
 		// Constructors
 
-		PhmModel(PhmDevice& device, const PhmModel::Builder& builder);
-		~PhmModel();
+		Model(Device& device, const Model::Builder& builder);
+		~Model();
 
-		PhmModel(const PhmModel&) = delete;
-		PhmModel& operator=(const PhmModel&) = delete;
+		Model(const Model&) = delete;
+		Model& operator=(const Model&) = delete;
 
 		// Public methods
 
-		static std::unique_ptr<PhmModel> createModelFromFile(PhmDevice& device, std::string_view filePath);
+		static std::unique_ptr<Model> createModelFromFile(Device& device, std::string_view filePath);
 
 		void bind(VkCommandBuffer commandBuffer);
 		void draw(VkCommandBuffer commandBuffer);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 
 		VkBuffer vertexBuffer_;
 		VkDeviceMemory vertexBufferMemory_;

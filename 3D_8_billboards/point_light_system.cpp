@@ -15,7 +15,7 @@
 
 namespace phm
 {
-	PointLightSystem::PointLightSystem(PhmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
+	PointLightSystem::PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
 		: device_(device)
 	{
 		createPipelineLayout(globalSetLayout);
@@ -58,14 +58,14 @@ namespace phm
 		);
 
 		phm::PipelineConfigInfo pipelineConfig{};
-		PhmPipeline::defaultPipelineConfigInfo(pipelineConfig);
+		Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();
 
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = pipelineLayout_;
 
-		pipeline_ = std::make_unique<PhmPipeline>(
+		pipeline_ = std::make_unique<Pipeline>(
 			device_,
 			"shaders/point_light.vert.spv",
 			"shaders/point_light.frag.spv",

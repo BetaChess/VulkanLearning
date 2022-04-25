@@ -8,19 +8,19 @@
 namespace phm
 {
 
-	PhmRenderer::PhmRenderer(PhmWindow& window, PhmDevice& device)
+	Renderer::Renderer(Window& window, Device& device)
 		: window_(window), device_(device)
 	{
 		recreateSwapchain(); // Calls createPipeline()
 		createCommandBuffers();
 	}
 
-	PhmRenderer::~PhmRenderer()
+	Renderer::~Renderer()
 	{
 		freeCommandBuffers();
 	}
 
-	void PhmRenderer::recreateSwapchain()
+	void Renderer::recreateSwapchain()
 	{
 		auto extent = window_.getExtent();
 
@@ -36,12 +36,12 @@ namespace phm
 
 		if (swapchain_ == nullptr)
 		{
-			swapchain_ = std::make_unique<PhmSwapchain>(device_, extent);
+			swapchain_ = std::make_unique<Swapchain>(device_, extent);
 		}
 		else
 		{
-			std::shared_ptr<PhmSwapchain> oldSwapChain = std::move(swapchain_);
-			swapchain_ = std::make_unique<PhmSwapchain>(device_, extent, oldSwapChain);
+			std::shared_ptr<Swapchain> oldSwapChain = std::move(swapchain_);
+			swapchain_ = std::make_unique<Swapchain>(device_, extent, oldSwapChain);
 
 			if (!oldSwapChain->compareSwapChainFormats(*swapchain_.get()))
 			{
@@ -50,9 +50,9 @@ namespace phm
 		}
 	}
 
-	void PhmRenderer::createCommandBuffers()
+	void Renderer::createCommandBuffers()
 	{
-		commandBuffers_.resize(PhmSwapchain::MAX_FRAMES_IN_FLIGHT);
+		commandBuffers_.resize(Swapchain::MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -66,13 +66,13 @@ namespace phm
 		}
 	}
 
-	void PhmRenderer::freeCommandBuffers()
+	void Renderer::freeCommandBuffers()
 	{
 		vkFreeCommandBuffers(device_.device(), device_.getCommandPool(), static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
 		commandBuffers_.clear();
 	}
 
-	VkCommandBuffer PhmRenderer::beginFrame()
+	VkCommandBuffer Renderer::beginFrame()
 	{
 		assert(!isFrameStarted_ && "Cannot call beginFrame while already in progress");
 
@@ -107,7 +107,7 @@ namespace phm
 		return commandBuffer;
 	}
 
-	void PhmRenderer::endFrame()
+	void Renderer::endFrame()
 	{
 		assert(isFrameStarted_ && "Can't end frame while frame is not in progess");
 		auto commandBuffer = getCurrentCommandBuffer();
@@ -131,10 +131,10 @@ namespace phm
 		}
 
 		isFrameStarted_ = false;
-		currentFrameIndex_ = (currentFrameIndex_ + 1) % PhmSwapchain::MAX_FRAMES_IN_FLIGHT;
+		currentFrameIndex_ = (currentFrameIndex_ + 1) % Swapchain::MAX_FRAMES_IN_FLIGHT;
 	}
 
-	void PhmRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
+	void Renderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
 	{
 		assert(isFrameStarted_ && "Can't begin swap chain render pass while frame is not in progress");
 		assert(commandBuffer == getCurrentCommandBuffer() && "Can't start a render pass with a command buffer from a different frame");
@@ -171,7 +171,7 @@ namespace phm
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	void PhmRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
+	void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
 	{
 		assert(isFrameStarted_ && "Can't end swap chain render pass while frame is not in progress");
 		assert(commandBuffer == getCurrentCommandBuffer() && "Can't end a render pass with a command buffer from a different frame");

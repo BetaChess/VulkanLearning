@@ -18,7 +18,7 @@ namespace phm
 		alignas(16) glm::vec3 color;
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(PhmDevice& device, VkRenderPass renderPass)
+	SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass)
 		: device_(device)
 	{
 		createPipelineLayout();
@@ -60,11 +60,11 @@ namespace phm
 		);
 
 		phm::PipelineConfigInfo pipelineConfig{};
-		PhmPipeline::defaultPipelineConfigInfo(pipelineConfig);
+		Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = pipelineLayout_;
 
-		pipeline_ = std::make_unique<PhmPipeline>(
+		pipeline_ = std::make_unique<Pipeline>(
 			device_,
 			"shaders/simple_shader.vert.spv",
 			"shaders/simple_shader.frag.spv",
@@ -73,7 +73,7 @@ namespace phm
 
 	}
 
-	void SimpleRenderSystem::renderObjects(VkCommandBuffer commandBuffer, const std::vector<PhmObject>& objects)
+	void SimpleRenderSystem::renderObjects(VkCommandBuffer commandBuffer, const std::vector<Object>& objects)
 	{
 		pipeline_->bind(commandBuffer);
 

@@ -33,9 +33,9 @@ glm::mat4 lerp(const glm::mat4& mata, const glm::mat4& matb, float lerp)
 
 namespace phm
 {
-	PhmObject getViewFrustum(PhmDevice& device, float fovy, float aspect, float near, float far)
+	Object getViewFrustum(Device& device, float fovy, float aspect, float near, float far)
 	{
-		PhmObject retObj;
+		Object retObj;
 
 		float neary = glm::sin(fovy) * near;
 		float nearx = aspect * neary;
@@ -44,7 +44,7 @@ namespace phm
 
 		glm::vec4 color{ 105.0f / 255.0f, 14.0f / 255.0f, 232.0f / 255.0f, 0.05f };
 
-		PhmModel::Builder builder;
+		Model::Builder builder;
 		// Normals and UV, not used
 		builder.vertices.push_back(
 			{
@@ -151,7 +151,7 @@ namespace phm
 		builder.indices.push_back(2); // -y right near
 
 
-		retObj.model = std::make_unique<PhmModel>(device, builder);
+		retObj.model = std::make_unique<Model>(device, builder);
 
 		return retObj;
 	}
@@ -169,9 +169,9 @@ namespace phm
 
 	Application::Application()
 	{
-		globalPool_ = PhmDescriptorPool::Builder(device_)
-			.setMaxSets(PhmSwapchain::MAX_FRAMES_IN_FLIGHT)
-			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, PhmSwapchain::MAX_FRAMES_IN_FLIGHT)
+		globalPool_ = DescriptorPool::Builder(device_)
+			.setMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 
 		loadObjects();
@@ -183,27 +183,27 @@ namespace phm
 
 	void Application::run()
 	{
-		std::vector<std::unique_ptr<PhmBuffer>> uniformBuffers(PhmSwapchain::MAX_FRAMES_IN_FLIGHT);
+		std::vector<std::unique_ptr<Buffer>> uniformBuffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
 		for (auto& bufferPtr : uniformBuffers)
 		{
-			bufferPtr = std::make_unique<PhmBuffer>(device_,
+			bufferPtr = std::make_unique<Buffer>(device_,
 				sizeof(GlobalUbo),
-				PhmSwapchain::MAX_FRAMES_IN_FLIGHT,
+				Swapchain::MAX_FRAMES_IN_FLIGHT,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
 				device_.properties.limits.minUniformBufferOffsetAlignment);
 			bufferPtr->map();
 		}
 
-		auto globalSetLayout = PhmDescriptorSetLayout::Builder(device_)
+		auto globalSetLayout = DescriptorSetLayout::Builder(device_)
 			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 			.build();
 
-		std::vector<VkDescriptorSet> globalDescriptorSets(PhmSwapchain::MAX_FRAMES_IN_FLIGHT);
+		std::vector<VkDescriptorSet> globalDescriptorSets(Swapchain::MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < globalDescriptorSets.size(); i++)
 		{
 			auto bufferInfo = uniformBuffers[i]->descriptorInfo();
-			PhmDescriptorWriter(*globalSetLayout, *globalPool_)
+			DescriptorWriter(*globalSetLayout, *globalPool_)
 				.writeBuffer(0, &bufferInfo)
 				.build(globalDescriptorSets[i]);
 		}
@@ -214,25 +214,25 @@ namespace phm
 
 		
 		// Cameras
-		PhmCamera camera{};
-		PhmObject cameraViewerObject;
+		Camera camera{};
+		Object cameraViewerObject;
 		cameraViewerObject.transform.translation.z = -2.3f;
 		cameraViewerObject.transform.translation.y = -0.5f;
 
 		bool useBothProjections = false;
 		bool usingProjectionViewerCamera = false;
-		PhmCamera projectionViewerCamera{};
-		PhmObject projectionViewerObject;
+		Camera projectionViewerCamera{};
+		Object projectionViewerObject;
 		projectionViewerObject.transform.translation.z = -3.3f;
 		projectionViewerObject.transform.translation.y = -0.8f;
 		projectionViewerObject.transform.rotation.y = -0.1f;
 
 		// non owning pointers to the currently used camera.
-		PhmCamera* currentCamera = &camera;
-		PhmObject* currentCameraObject = &cameraViewerObject; 
+		Camera* currentCamera = &camera;
+		Object* currentCameraObject = &cameraViewerObject; 
 
 		// Input
-		PhmKeyboardController cameraController{};
+		KeyboardController cameraController{};
 
 		// Time management
 		Time time;
@@ -240,7 +240,7 @@ namespace phm
 		float currLerp = 0.0f;
 		float timeUntilMaxLerp = 1.5f;
 
-		PhmObject frustum;
+		Object frustum;
 
 		float currRot = 0;
 		while (!window_.shouldClose())
@@ -339,9 +339,9 @@ namespace phm
 	void Application::loadObjects()
 	{
 		{
-			std::shared_ptr<PhmModel> model = PhmModel::createModelFromFile(device_, "models/smooth_vase.obj");
+			std::shared_ptr<Model> model = Model::createModelFromFile(device_, "models/smooth_vase.obj");
 
-			PhmObject object;
+			Object object;
 			object.model = model;
 			object.transform.translation = { -0.8f, 0.0f, 0.0f };
 			object.transform.scale = glm::vec3(3);
@@ -350,9 +350,9 @@ namespace phm
 			objects_.push_back(std::move(object));
 		}
 		{
-			std::shared_ptr<PhmModel> model = PhmModel::createModelFromFile(device_, "models/flat_vase.obj");
+			std::shared_ptr<Model> model = Model::createModelFromFile(device_, "models/flat_vase.obj");
 
-			PhmObject object;
+			Object object;
 			object.model = model;
 			object.transform.translation = { 0.8f, 0.0f, 0.0f };
 			object.transform.scale = glm::vec3(3);
@@ -361,9 +361,9 @@ namespace phm
 			objects_.push_back(std::move(object));
 		}
 		{
-			std::shared_ptr<PhmModel> model = PhmModel::createModelFromFile(device_, "models/quad.obj");
+			std::shared_ptr<Model> model = Model::createModelFromFile(device_, "models/quad.obj");
 
-			PhmObject object;
+			Object object;
 			object.model = model;
 			object.transform.translation = { 0.0f, 0.0f, 0.0f };
 			object.transform.scale = glm::vec3{ 3.0f, 1.0f, 3.0f };

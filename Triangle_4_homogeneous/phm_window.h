@@ -8,18 +8,18 @@
 
 namespace phm
 {
-	class PhmWindow
+	class Window
 	{
 	public:
 		// Constructor(s)
-		PhmWindow(size_t w, size_t h, std::string name);
+		Window(size_t w, size_t h, std::string name);
 
 		// Delete copy constructor and assignment operator.
-		PhmWindow(const PhmWindow&) = delete;
-		PhmWindow& operator=(const PhmWindow&) = delete;
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) = delete;
 
 		// Destructor
-		~PhmWindow();
+		~Window();
 
 		// Public methods
 		inline bool shouldClose() { return glfwWindowShouldClose(window_); };

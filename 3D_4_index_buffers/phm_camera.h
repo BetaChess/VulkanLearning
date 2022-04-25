@@ -8,7 +8,7 @@
 
 namespace phm
 {
-	class PhmCamera
+	class Camera
 	{
 
 	public:

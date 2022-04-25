@@ -6,20 +6,20 @@
 namespace phm
 {
 
-	class PhmBuffer
+	class Buffer
 	{
 	public:
-		PhmBuffer(
-			PhmDevice& device,
+		Buffer(
+			Device& device,
 			VkDeviceSize instanceSize,
 			uint32_t instanceCount,
 			VkBufferUsageFlags usageFlags,
 			VkMemoryPropertyFlags memoryPropertyFlags,
 			VkDeviceSize minOffsetAlignment = 1);
-		~PhmBuffer();
+		~Buffer();
 
-		PhmBuffer(const PhmBuffer&) = delete;
-		PhmBuffer& operator=(const PhmBuffer&) = delete;
+		Buffer(const Buffer&) = delete;
+		Buffer& operator=(const Buffer&) = delete;
 
 		VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 		void unmap();
@@ -46,7 +46,7 @@ namespace phm
 	private:
 		static VkDeviceSize getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
-		PhmDevice& device_;
+		Device& device_;
 		void* mapped_ = nullptr;
 		VkBuffer buffer_ = VK_NULL_HANDLE;
 		VkDeviceMemory memory_ = VK_NULL_HANDLE;

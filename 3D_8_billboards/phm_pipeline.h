@@ -30,23 +30,23 @@ namespace phm
 		uint32_t subpass = 0;
 	};
 
-	class PhmPipeline
+	class Pipeline
 	{
 	public:
 		// Constructor(s)
-		PhmPipeline(
-			PhmDevice& device, 
+		Pipeline(
+			Device& device, 
 			const std::string& vertFilePath, 
 			const std::string& fragFilePath, 
 			const PipelineConfigInfo& configInfo);
 
-		~PhmPipeline();
+		~Pipeline();
 
 		// Not copyable or movable
-		PhmPipeline(const PhmPipeline&) = delete;
-		void operator=(const PhmPipeline&) = delete;
-		PhmPipeline(PhmPipeline&&) = delete;
-		PhmPipeline& operator=(PhmPipeline&&) = delete;
+		Pipeline(const Pipeline&) = delete;
+		void operator=(const Pipeline&) = delete;
+		Pipeline(Pipeline&&) = delete;
+		Pipeline& operator=(Pipeline&&) = delete;
 
 		void bind(VkCommandBuffer commandBuffer);
 
@@ -55,7 +55,7 @@ namespace phm
 
 	private:
 		// Private member variables
-		PhmDevice& device_; // Pipeline has an aggregate relation to the device.
+		Device& device_; // Pipeline has an aggregate relation to the device.
 		VkPipeline graphicsPipeline_;
 		VkShaderModule vertexShaderModule_;
 		VkShaderModule fragmentShaderModule_;

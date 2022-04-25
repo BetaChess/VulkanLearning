@@ -28,12 +28,12 @@ namespace phm
 		void run();
 
 	private:
-		PhmWindow window_{ WIDTH, HEIGHT, "Projection Showcase" };
-		PhmDevice device_{ window_ };
-		PhmRenderer renderer_{ window_, device_ };
+		Window window_{ WIDTH, HEIGHT, "Projection Showcase" };
+		Device device_{ window_ };
+		Renderer renderer_{ window_, device_ };
 
-		std::unique_ptr<PhmDescriptorPool> globalPool_{};
-		std::vector<PhmObject> objects_; // TEMP
+		std::unique_ptr<DescriptorPool> globalPool_{};
+		std::vector<Object> objects_; // TEMP
 		
 		void loadObjects(); // TEMP
 	};

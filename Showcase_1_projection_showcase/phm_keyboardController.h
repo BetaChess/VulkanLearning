@@ -7,7 +7,7 @@
 
 namespace phm
 {
-	class PhmKeyboardController
+	class KeyboardController
 	{
 	public:
 		struct KeyMappings
@@ -27,7 +27,7 @@ namespace phm
 			int lookDown = GLFW_KEY_DOWN;
 		};
 
-		void moveInPlaneXZ(GLFWwindow* window, float dt, PhmObject& object) const;
+		void moveInPlaneXZ(GLFWwindow* window, float dt, Object& object) const;
 		bool shouldChangeCamera(GLFWwindow* window) const;
 		bool shouldChangeProjectionView(GLFWwindow* window) const;
 

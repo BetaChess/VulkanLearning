@@ -98,7 +98,7 @@ namespace phm
 
 	// class member functions
 
-	PhmDevice::PhmDevice(PhmWindow& window)
+	Device::Device(Window& window)
 		: window_{ window }
 	{
 		// Names of the methods should be explaination enough.
@@ -110,7 +110,7 @@ namespace phm
 		createCommandPool();
 	}
 
-	PhmDevice::~PhmDevice()
+	Device::~Device()
 	{
 		// Do the cleanup in the right order.
 
@@ -130,7 +130,7 @@ namespace phm
 	/// <summary>
 	/// Method for creating the device instance.
 	/// </summary>
-	void PhmDevice::createInstance()
+	void Device::createInstance()
 	{
 		// Check if the validation layers are enabled and supported.
 		if (enableValidationLayers && !checkValidationLayerSupport())
@@ -223,7 +223,7 @@ namespace phm
 	/// <summary>
 	/// Method responsible for picking the physical device (GPU).
 	/// </summary>
-	void PhmDevice::pickPhysicalDevice()
+	void Device::pickPhysicalDevice()
 	{
 		// Find the number of physical devices that support vulkan.
 		uint32_t deviceCount = 0;
@@ -271,7 +271,7 @@ namespace phm
 	/// <summary>
 	/// Method for creating the logical device (the device that interfaces with the physical device).
 	/// </summary>
-	void PhmDevice::createLogicalDevice()
+	void Device::createLogicalDevice()
 	{
 		// Get the queue family indices
 		QueueFamilyIndices indices = findQueueFamilies(physicalDevice_);
@@ -335,7 +335,7 @@ namespace phm
 	/// <summary>
 	/// Method for creating the command pool.
 	/// </summary>
-	void PhmDevice::createCommandPool()
+	void Device::createCommandPool()
 	{
 		// Get the supported queue families from the GPU.
 		QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
@@ -360,14 +360,14 @@ namespace phm
 	/// <summary>
 	/// Method for initiating the surface member. Uses the window and instance members.
 	/// </summary>
-	void PhmDevice::createSurface() { window_.createWindowSurface(instance_, &surface_); }
+	void Device::createSurface() { window_.createWindowSurface(instance_, &surface_); }
 
 	/// <summary>
 	/// Checks if a physical device (GPU) is suitable for use.
 	/// </summary>
 	/// <param name="device">: The physical device (GPU) to check.</param>
 	/// <returns>True if the device is suitable. False otherwise. </returns>
-	bool PhmDevice::isDeviceSuitable(VkPhysicalDevice device)
+	bool Device::isDeviceSuitable(VkPhysicalDevice device)
 	{
 		// Get the device properties
 		VkPhysicalDeviceProperties deviceProperties;
@@ -401,7 +401,7 @@ namespace phm
 	/// Just a helper function for populating the debug messenger creation info.
 	/// </summary>
 	/// <param name="createInfo">: The createinfo to be populated. </param>
-	void PhmDevice::populateDebugMessengerCreateInfo(
+	void Device::populateDebugMessengerCreateInfo(
 		VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 	{
 		createInfo = {};
@@ -419,7 +419,7 @@ namespace phm
 	/// <summary>
 	/// Methods to set up the debug messenger. Automatically returns if validation layers are disabled.
 	/// </summary>
-	void PhmDevice::setupDebugMessenger()
+	void Device::setupDebugMessenger()
 	{
 		// Return if the debug messenger isn't nececary (if validation layers are not enabled).
 		if (!enableValidationLayers) return;
@@ -439,7 +439,7 @@ namespace phm
 	/// Methods to check for validation layer support
 	/// </summary>
 	/// <returns>True if the nececary validation layers are supported. False otherwise. </returns>
-	bool PhmDevice::checkValidationLayerSupport()
+	bool Device::checkValidationLayerSupport()
 	{
 		// Get the validation layer count
 		uint32_t layerCount;
@@ -484,7 +484,7 @@ namespace phm
 	/// Method for getting the extensions required by the application.
 	/// </summary>
 	/// <returns>A vector of all of the required extensions. </returns>
-	std::vector<const char*> PhmDevice::getRequiredExtensions()
+	std::vector<const char*> Device::getRequiredExtensions()
 	{
 		// Get the number of extensions required by glfw.
 		uint32_t glfwExtensionCount = 0;
@@ -507,7 +507,7 @@ namespace phm
 	/// <summary>
 	/// Check if all of the required extensions are supported. Throws a runtime error if they are not.
 	/// </summary>
-	void PhmDevice::hasGflwRequiredInstanceExtensions()
+	void Device::hasGflwRequiredInstanceExtensions()
 	{
 		// Create a variable to store the number of supported extensions
 		uint32_t extensionCount = 0;
@@ -551,7 +551,7 @@ namespace phm
 	/// </summary>
 	/// <param name="device">: The physical device to check. </param>
 	/// <returns>True if the device supports all of the extendsions. False otherwise. </returns>
-	bool PhmDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
+	bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
 		// Get the extension count
 		uint32_t extensionCount;
@@ -579,7 +579,7 @@ namespace phm
 	/// </summary>
 	/// <param name="device">: The physical device (GPU) to check.</param>
 	/// <returns>QueueFamilyIndices</returns>
-	QueueFamilyIndices PhmDevice::findQueueFamilies(VkPhysicalDevice device)
+	QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices;
 		// Logic to find queue family indices to populate struct with
@@ -623,7 +623,7 @@ namespace phm
 	/// </summary>
 	/// <param name="device">: The physical device. </param>
 	/// <returns>The swapchain support details (SwapChainSupportDetails). </returns>
-	SwapChainSupportDetails PhmDevice::querySwapChainSupport(VkPhysicalDevice device)
+	SwapChainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device)
 	{
 		SwapChainSupportDetails details;
 
@@ -655,7 +655,7 @@ namespace phm
 		return details;
 	}
 
-	VkFormat PhmDevice::findSupportedFormat(
+	VkFormat Device::findSupportedFormat(
 		const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
 	{
 		// TODO: ADD COMMENTS
@@ -683,7 +683,7 @@ namespace phm
 	/// <param name="typeFilter">: Typefilter</param>
 	/// <param name="properties">: A bitmask of the required properties. </param>
 	/// <returns>The index to the suitable memory. </returns>
-	uint32_t PhmDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		// Get the memory properties of the physical device
 		VkPhysicalDeviceMemoryProperties memProperties;
@@ -714,7 +714,7 @@ namespace phm
 	/// <param name="properties">: The required properties of the memory visible to the physical device. </param>
 	/// <param name="buffer">: The buffer reference that will be written to. </param>
 	/// <param name="bufferMemory">: The buffer device memory that will be written to. </param>
-	void PhmDevice::createBuffer(
+	void Device::createBuffer(
 		VkDeviceSize size,
 		VkBufferUsageFlags usage,
 		VkMemoryPropertyFlags properties,
@@ -760,7 +760,7 @@ namespace phm
 	/// Creates a single use command buffer.
 	/// </summary>
 	/// <returns>The created command buffer. </returns>
-	VkCommandBuffer PhmDevice::beginSingleTimeCommands()
+	VkCommandBuffer Device::beginSingleTimeCommands()
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -783,7 +783,7 @@ namespace phm
 	/// Submits the commands in a single use command buffer, then destroys it.
 	/// </summary>
 	/// <param name="commandBuffer">: The single use command buffer to be destroyed. </param>
-	void PhmDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+	void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 	{
 		vkEndCommandBuffer(commandBuffer);
 
@@ -806,7 +806,7 @@ namespace phm
 	/// <param name="srcBuffer">: The source buffer. </param>
 	/// <param name="dstBuffer">: The destination buffer. </param>
 	/// <param name="size">: The size of the region to be copied. </param>
-	void PhmDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+	void Device::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		// Create a single use command to copy the contents
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
@@ -831,7 +831,7 @@ namespace phm
 	/// <param name="width">: The width. </param>
 	/// <param name="height">: The height. </param>
 	/// <param name="layerCount">: The number of layers. </param>
-	void PhmDevice::copyBufferToImage(
+	void Device::copyBufferToImage(
 		VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
 	{
 		// Create a single use command buffer. 
@@ -872,7 +872,7 @@ namespace phm
 	/// <param name="properties">: The property bitmask for the memory used to store the image. </param>
 	/// <param name="image">: The reference the VkImage will be written to. </param>
 	/// <param name="imageMemory">: The reference the image memory will be written to. </param>
-	void PhmDevice::createImageWithInfo(
+	void Device::createImageWithInfo(
 		const VkImageCreateInfo& imageInfo,
 		VkMemoryPropertyFlags properties,
 		VkImage& image,
@@ -912,7 +912,7 @@ namespace phm
 	/// </summary>
 	/// <param name="device">: The physical device to be scored. </param>
 	/// <returns>The score of the device. </returns>
-	int PhmDevice::rateDeviceSuitability(VkPhysicalDevice device)
+	int Device::rateDeviceSuitability(VkPhysicalDevice device)
 	{
 		// First, check if the device is suitable at all.
 		if (!isDeviceSuitable(device))

@@ -28,13 +28,13 @@ namespace phm
 		void run();
 
 	private:
-		PhmWindow window_{ WIDTH, HEIGHT, "Triangle" };
-		PhmDevice device_{ window_ };
-		std::unique_ptr<PhmSwapchain> swapchain_;
-		std::unique_ptr<PhmPipeline> pipeline_;
+		Window window_{ WIDTH, HEIGHT, "Triangle" };
+		Device device_{ window_ };
+		std::unique_ptr<Swapchain> swapchain_;
+		std::unique_ptr<Pipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 		std::vector<VkCommandBuffer> commandBuffers_;
-		std::vector<PhmObject> objects_; // TEMP
+		std::vector<Object> objects_; // TEMP
 
 		void loadObjects(); // TEMP
 		void createPipelineLayout();

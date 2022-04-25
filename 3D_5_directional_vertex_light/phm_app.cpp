@@ -30,9 +30,9 @@ namespace phm
 	void Application::run()
 	{
 		SimpleRenderSystem simpleRenderSystem{ device_, renderer_.getSwapChainRenderPass() };
-		PhmCamera camera{};
-		PhmObject viewerObject;
-		PhmKeyboardController cameraController{};
+		Camera camera{};
+		Object viewerObject;
+		KeyboardController cameraController{};
 		//camera.setViewDirection(glm::vec3(0.0f), glm::vec3(0.5f, 0.0f, 1.0f));
 
 		Time time;
@@ -67,9 +67,9 @@ namespace phm
 
 	void Application::loadObjects()
 	{
-		std::shared_ptr<PhmModel> model = PhmModel::createModelFromFile(device_, "models/smooth_vase.obj");
+		std::shared_ptr<Model> model = Model::createModelFromFile(device_, "models/smooth_vase.obj");
 
-		PhmObject object;
+		Object object;
 		object.model = model;
 		object.transform.translation = { 0.0f, 0.0f, 1.5f };
 		object.transform.scale = glm::vec3(3);

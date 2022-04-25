@@ -27,11 +27,11 @@ namespace phm
 		void run();
 
 	private:
-		PhmWindow window_{ WIDTH, HEIGHT, "Triangle" };
-		PhmDevice device_{ window_ };
-		PhmRenderer renderer_{ window_, device_ };
+		Window window_{ WIDTH, HEIGHT, "Triangle" };
+		Device device_{ window_ };
+		Renderer renderer_{ window_, device_ };
 
-		std::vector<PhmObject> objects_; // TEMP
+		std::vector<Object> objects_; // TEMP
 
 		void loadObjects(); // TEMP
 	};

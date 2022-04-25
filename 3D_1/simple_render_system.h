@@ -14,18 +14,18 @@ namespace phm
 	{
 
 	public:
-		SimpleRenderSystem(PhmDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(Device& device, VkRenderPass renderPass);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
 
-		void renderObjects(VkCommandBuffer commandBuffer, std::vector<PhmObject>& objects);
+		void renderObjects(VkCommandBuffer commandBuffer, std::vector<Object>& objects);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 
-		std::unique_ptr<PhmPipeline> pipeline_;
+		std::unique_ptr<Pipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 
 		void createPipelineLayout();

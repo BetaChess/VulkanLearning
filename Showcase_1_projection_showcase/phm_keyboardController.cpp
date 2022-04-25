@@ -4,7 +4,7 @@
 
 namespace phm
 {
-	void PhmKeyboardController::moveInPlaneXZ(GLFWwindow* window, float dt, PhmObject& object) const
+	void KeyboardController::moveInPlaneXZ(GLFWwindow* window, float dt, Object& object) const
 	{
 		// ROTATION
 		glm::vec3 rotate{ 0.0f };
@@ -49,7 +49,7 @@ namespace phm
 
 	}
 
-	bool PhmKeyboardController::shouldChangeCamera(GLFWwindow* window) const
+	bool KeyboardController::shouldChangeCamera(GLFWwindow* window) const
 	{
 		static bool keyReleased = true;
 		const bool keyPressed = glfwGetKey(window, keys.changeCamera) == GLFW_PRESS;
@@ -66,7 +66,7 @@ namespace phm
 		return false;
 	}
 
-	bool PhmKeyboardController::shouldChangeProjectionView(GLFWwindow* window) const
+	bool KeyboardController::shouldChangeProjectionView(GLFWwindow* window) const
 	{
 		static bool keyReleased = true;
 		const bool keyPressed = glfwGetKey(window, keys.changeProjectionView) == GLFW_PRESS;

@@ -30,7 +30,7 @@ namespace phm
 		inline bool isComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
 	};
 
-	class PhmDevice
+	class Device
 	{
 	public:
 #ifdef NDEBUG
@@ -39,14 +39,14 @@ namespace phm
 		const bool enableValidationLayers = true;
 #endif
 
-		PhmDevice(PhmWindow& window);
-		~PhmDevice();
+		Device(Window& window);
+		~Device();
 
 		// Not copyable or movable
-		PhmDevice(const PhmDevice&) = delete;
-		PhmDevice& operator=(const PhmDevice&) = delete;
-		PhmDevice(PhmDevice&&) = delete;
-		PhmDevice& operator=(PhmDevice&&) = delete;
+		Device(const Device&) = delete;
+		Device& operator=(const Device&) = delete;
+		Device(Device&&) = delete;
+		Device& operator=(Device&&) = delete;
 
 		VkCommandPool getCommandPool() { return commandPool_; }
 		VkDevice device() { return device_; }
@@ -108,7 +108,7 @@ namespace phm
 		VkInstance instance_;
 		VkDebugUtilsMessengerEXT debugMessenger_;
 		VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
-		PhmWindow& window_;
+		Window& window_;
 		VkCommandPool commandPool_;
 
 		VkDevice device_;

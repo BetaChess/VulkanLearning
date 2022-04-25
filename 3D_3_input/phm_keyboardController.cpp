@@ -2,7 +2,7 @@
 
 namespace phm
 {
-	void PhmKeyboardController::moveInPlaneXZ(GLFWwindow* window, float dt, PhmObject& object)
+	void KeyboardController::moveInPlaneXZ(GLFWwindow* window, float dt, Object& object)
 	{
 		// ROTATION
 		glm::vec3 rotate{ 0.0f };

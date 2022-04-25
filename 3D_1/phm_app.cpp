@@ -13,8 +13,8 @@
 #include <iostream>
 
 // temporary helper function, creates a 1x1x1 cube centered at offset
-std::unique_ptr<phm::PhmModel> createCubeModel(phm::PhmDevice& device, glm::vec3 offset) {
-	std::vector<phm::PhmModel::Vertex> vertices{
+std::unique_ptr<phm::Model> createCubeModel(phm::Device& device, glm::vec3 offset) {
+	std::vector<phm::Model::Vertex> vertices{
 
 		// left face (white)
 		{{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
@@ -68,7 +68,7 @@ std::unique_ptr<phm::PhmModel> createCubeModel(phm::PhmDevice& device, glm::vec3
 	for (auto& v : vertices) {
 		v.position += offset;
 	}
-	return std::make_unique<phm::PhmModel>(device, vertices);
+	return std::make_unique<phm::Model>(device, vertices);
 }
 
 namespace phm
@@ -109,9 +109,9 @@ namespace phm
 
 	void Application::loadObjects()
 	{
-		std::shared_ptr<PhmModel> model = createCubeModel(device_, { 0.0f,0.0f,0.0f });
+		std::shared_ptr<Model> model = createCubeModel(device_, { 0.0f,0.0f,0.0f });
 
-		PhmObject cube;
+		Object cube;
 		cube.model = model;
 		cube.transform.translation = { 0.0f, 0.0f, 0.5f };
 		cube.transform.scale = { 0.5f, 0.5f, 0.5f };

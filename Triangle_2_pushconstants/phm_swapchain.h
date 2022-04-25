@@ -13,20 +13,20 @@
 
 namespace phm
 {
-	class PhmSwapchain
+	class Swapchain
 	{
 	public:
 		static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-		PhmSwapchain(PhmDevice& deviceRef, VkExtent2D windowExtent);
-		PhmSwapchain(PhmDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<PhmSwapchain> previous);
-		~PhmSwapchain();
+		Swapchain(Device& deviceRef, VkExtent2D windowExtent);
+		Swapchain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<Swapchain> previous);
+		~Swapchain();
 
 		// Not copyable or movable
-		PhmSwapchain(const PhmSwapchain&) = delete;
-		PhmSwapchain& operator=(const PhmSwapchain&) = delete;
-		PhmSwapchain(PhmSwapchain&&) = delete;
-		PhmSwapchain& operator=(PhmSwapchain&&) = delete;
+		Swapchain(const Swapchain&) = delete;
+		Swapchain& operator=(const Swapchain&) = delete;
+		Swapchain(Swapchain&&) = delete;
+		Swapchain& operator=(Swapchain&&) = delete;
 
 
 		VkFramebuffer getFrameBuffer(size_t index) { return swapChainFramebuffers_[index]; }
@@ -60,11 +60,11 @@ namespace phm
 		std::vector<VkImage> swapChainImages_;
 		std::vector<VkImageView> swapChainImageViews_;
 
-		PhmDevice& device_;
+		Device& device_;
 		VkExtent2D windowExtent_;
 
 		VkSwapchainKHR swapChain_;
-		std::shared_ptr<PhmSwapchain> oldSwapChain_;
+		std::shared_ptr<Swapchain> oldSwapChain_;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores_;
 		std::vector<VkSemaphore> renderFinishedSemaphores_;

@@ -4,7 +4,7 @@
 #include <array>
 #include <iostream>
 
-std::vector<phm::PhmModel::Vertex> sierpinskiTriangle(std::array<phm::PhmModel::Vertex, 3> initialTriangle, size_t depth)
+std::vector<phm::Model::Vertex> sierpinskiTriangle(std::array<phm::Model::Vertex, 3> initialTriangle, size_t depth)
 {
 	if (depth == 0)
 		return { initialTriangle[0], initialTriangle[1], initialTriangle[2] };
@@ -88,7 +88,7 @@ std::vector<phm::PhmModel::Vertex> sierpinskiTriangle(std::array<phm::PhmModel::
 			}
 		}, depth - 1);
 
-	std::vector<phm::PhmModel::Vertex> retVec;
+	std::vector<phm::Model::Vertex> retVec;
 	retVec.insert(retVec.end(), triangles1.begin(), triangles1.end());
 	retVec.insert(retVec.end(), triangles2.begin(), triangles2.end());
 	retVec.insert(retVec.end(), triangles3.begin(), triangles3.end());
@@ -141,20 +141,20 @@ namespace phm
 
 	void Application::loadModels()
 	{
-		/*std::vector<PhmModel::Vertex> vertices
+		/*std::vector<Model::Vertex> vertices
 		{
 			{{0.0f, -0.5f}},
 			{{0.5f, 0.5f}},
 			{{-0.5f, 0.5f}}
 		};*/
-		std::vector<PhmModel::Vertex> vertices = sierpinskiTriangle(
+		std::vector<Model::Vertex> vertices = sierpinskiTriangle(
 			{ { 
 				{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
 				{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
 				{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 			} }, 6);
 
-		model_ = std::make_unique<PhmModel>(device_, vertices);
+		model_ = std::make_unique<Model>(device_, vertices);
 	}
 
 	void Application::createPipeline()
@@ -169,11 +169,11 @@ namespace phm
 		);
 
 		phm::PipelineConfigInfo pipelineConfig{};
-		PhmPipeline::defaultPipelineConfigInfo(pipelineConfig);
+		Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.renderPass = swapchain_->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout_;
 
-		pipeline_ = std::make_unique<PhmPipeline>(
+		pipeline_ = std::make_unique<Pipeline>(
 			device_,
 			"shaders/simple_shader.vert.spv",
 			"shaders/simple_shader.frag.spv",
@@ -198,11 +198,11 @@ namespace phm
 
 		if (swapchain_ == nullptr)
 		{
-			swapchain_ = std::make_unique<PhmSwapchain>(device_, extent);
+			swapchain_ = std::make_unique<Swapchain>(device_, extent);
 		}
 		else
 		{
-			swapchain_ = std::make_unique<PhmSwapchain>(device_, extent, std::move(swapchain_));
+			swapchain_ = std::make_unique<Swapchain>(device_, extent, std::move(swapchain_));
 			if (swapchain_->imageCount() != commandBuffers_.size())
 			{
 				freeCommandBuffers();

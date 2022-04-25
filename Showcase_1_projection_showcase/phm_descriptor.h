@@ -10,71 +10,71 @@
 namespace phm
 {
 
-	class PhmDescriptorSetLayout
+	class DescriptorSetLayout
 	{
 	public:
 		class Builder
 		{
 		public:
-			Builder(PhmDevice& device) : device_{ device } {}
+			Builder(Device& device) : device_{ device } {}
 
 			Builder& addBinding(
 				uint32_t binding,
 				VkDescriptorType descriptorType,
 				VkShaderStageFlags stageFlags,
 				uint32_t count = 1);
-			std::unique_ptr<PhmDescriptorSetLayout> build() const;
+			std::unique_ptr<DescriptorSetLayout> build() const;
 
 		private:
-			PhmDevice& device_;
+			Device& device_;
 			std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
 		};
 
-		PhmDescriptorSetLayout(
-			PhmDevice& device, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
-		~PhmDescriptorSetLayout();
-		PhmDescriptorSetLayout(const PhmDescriptorSetLayout&) = delete;
-		PhmDescriptorSetLayout& operator=(const PhmDescriptorSetLayout&) = delete;
+		DescriptorSetLayout(
+			Device& device, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
+		~DescriptorSetLayout();
+		DescriptorSetLayout(const DescriptorSetLayout&) = delete;
+		DescriptorSetLayout& operator=(const DescriptorSetLayout&) = delete;
 
 		inline VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout_; }
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 		VkDescriptorSetLayout descriptorSetLayout_;
 		std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings_;
 
-		friend class PhmDescriptorWriter;
+		friend class DescriptorWriter;
 	};
 
 
-	class PhmDescriptorPool
+	class DescriptorPool
 	{
 	public:
 		class Builder
 		{
 		public:
-			Builder(PhmDevice& device) : device_{ device } {}
+			Builder(Device& device) : device_{ device } {}
 
 			Builder& addPoolSize(VkDescriptorType descriptorType, uint32_t count);
 			Builder& setPoolFlags(VkDescriptorPoolCreateFlags flags);
 			Builder& setMaxSets(uint32_t count);
-			std::unique_ptr<PhmDescriptorPool> build() const;
+			std::unique_ptr<DescriptorPool> build() const;
 
 		private:
-			PhmDevice& device_;
+			Device& device_;
 			std::vector<VkDescriptorPoolSize> poolSizes_{};
 			uint32_t maxSets_ = 1000;
 			VkDescriptorPoolCreateFlags poolFlags_ = 0;
 		};
 
-		PhmDescriptorPool(
-			PhmDevice& device,
+		DescriptorPool(
+			Device& device,
 			uint32_t maxSets,
 			VkDescriptorPoolCreateFlags poolFlags,
 			const std::vector<VkDescriptorPoolSize>& poolSizes);
-		~PhmDescriptorPool();
-		PhmDescriptorPool(const PhmDescriptorPool&) = delete;
-		PhmDescriptorPool& operator=(const PhmDescriptorPool&) = delete;
+		~DescriptorPool();
+		DescriptorPool(const DescriptorPool&) = delete;
+		DescriptorPool& operator=(const DescriptorPool&) = delete;
 
 		bool allocateDescriptorSet(
 			const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptor) const;
@@ -84,26 +84,26 @@ namespace phm
 		void resetPool();
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 		VkDescriptorPool descriptorPool_;
 
-		friend class PhmDescriptorWriter;
+		friend class DescriptorWriter;
 	};
 
-	class PhmDescriptorWriter
+	class DescriptorWriter
 	{
 	public:
-		PhmDescriptorWriter(PhmDescriptorSetLayout& setLayout, PhmDescriptorPool& pool);
+		DescriptorWriter(DescriptorSetLayout& setLayout, DescriptorPool& pool);
 
-		PhmDescriptorWriter& writeBuffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo);
-		PhmDescriptorWriter& writeImage(uint32_t binding, VkDescriptorImageInfo* imageInfo);
+		DescriptorWriter& writeBuffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo);
+		DescriptorWriter& writeImage(uint32_t binding, VkDescriptorImageInfo* imageInfo);
 
 		bool build(VkDescriptorSet& set);
 		void overwrite(VkDescriptorSet& set);
 
 	private:
-		PhmDescriptorSetLayout& setLayout_;
-		PhmDescriptorPool& pool_;
+		DescriptorSetLayout& setLayout_;
+		DescriptorPool& pool_;
 		std::vector<VkWriteDescriptorSet> writes_;
 	};
 }

@@ -15,9 +15,9 @@
 namespace std
 {
 	template<>
-	struct hash<phm::PhmModel::Vertex>
+	struct hash<phm::Model::Vertex>
 	{
-		size_t operator()(const phm::PhmModel::Vertex& vertex) const
+		size_t operator()(const phm::Model::Vertex& vertex) const
 		{
 			size_t seed = 0;
 			phm::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
@@ -29,7 +29,7 @@ namespace std
 namespace phm
 {
 
-	std::vector<VkVertexInputBindingDescription> PhmModel::Vertex::getBindingDescriptions()
+	std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions()
 	{
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
 
@@ -40,7 +40,7 @@ namespace phm
 		return bindingDescriptions;
 	}
 
-	std::vector<VkVertexInputAttributeDescription> PhmModel::Vertex::getAttributeDescriptions()
+	std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions()
 	{
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
@@ -52,20 +52,20 @@ namespace phm
 		return attributeDescriptions;
 	}
 
-	bool PhmModel::Vertex::operator==(const Vertex& other) const
+	bool Model::Vertex::operator==(const Vertex& other) const
 	{
 		return position == other.position && color == other.color && normal == other.normal && uv == other.uv;
 	}
 
 
-	PhmModel::PhmModel(PhmDevice& device, const PhmModel::Builder& builder)
+	Model::Model(Device& device, const Model::Builder& builder)
 		: device_(device)
 	{
 		createVertexBuffers(builder.vertices);
 		createIndexBuffers(builder.indices);
 	}
 
-	PhmModel::~PhmModel()
+	Model::~Model()
 	{
 		vkDestroyBuffer(device_.device(), vertexBuffer_, nullptr);
 		vkFreeMemory(device_.device(), vertexBufferMemory_, nullptr);
@@ -77,7 +77,7 @@ namespace phm
 		}
 	}
 
-	std::unique_ptr<PhmModel> PhmModel::createModelFromFile(PhmDevice& device, std::string_view filePath)
+	std::unique_ptr<Model> Model::createModelFromFile(Device& device, std::string_view filePath)
 	{
 		Builder builder{};
 		builder.loadModel(filePath);
@@ -86,10 +86,10 @@ namespace phm
 		DebugPrint("Vertex count: " << builder.vertices.size());
 		DebugPrint("Index buffer length: " << builder.indices.size());
 
-		return std::make_unique<PhmModel>(device, builder);
+		return std::make_unique<Model>(device, builder);
 	}
 
-	void PhmModel::bind(VkCommandBuffer commandBuffer)
+	void Model::bind(VkCommandBuffer commandBuffer)
 	{
 		VkBuffer buffers[] = { vertexBuffer_ };
 		VkDeviceSize offsets[] = { 0 };
@@ -101,7 +101,7 @@ namespace phm
 		}
 	}
 
-	void PhmModel::draw(VkCommandBuffer commandBuffer)
+	void Model::draw(VkCommandBuffer commandBuffer)
 	{
 		if (hasIndexBuffer)
 			vkCmdDrawIndexed(commandBuffer, indexCount_, 1, 0, 0, 0);
@@ -109,7 +109,7 @@ namespace phm
 			vkCmdDraw(commandBuffer, vertexCount_, 1, 0, 0);
 	}
 
-	void PhmModel::createVertexBuffers(const std::vector<Vertex>& vertices)
+	void Model::createVertexBuffers(const std::vector<Vertex>& vertices)
 	{
 		vertexCount_ = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount_ > 2 && "Vertex Count must be at least 3");
@@ -150,7 +150,7 @@ namespace phm
 		vkFreeMemory(device_.device(), stagingBufferMemory, nullptr);
 	}
 
-	void PhmModel::createIndexBuffers(const std::vector<uint32_t>& indices)
+	void Model::createIndexBuffers(const std::vector<uint32_t>& indices)
 	{
 		indexCount_ = static_cast<uint32_t>(indices.size());
 		hasIndexBuffer = indexCount_ > 0;
@@ -194,7 +194,7 @@ namespace phm
 		vkFreeMemory(device_.device(), stagingBufferMemory, nullptr);
 	}
 
-	void PhmModel::Builder::loadModel(std::string_view filePath)
+	void Model::Builder::loadModel(std::string_view filePath)
 	{
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;

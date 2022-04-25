@@ -13,7 +13,7 @@ namespace phm
 		int frameIndex;
 		float deltaTime;
 		VkCommandBuffer commandBuffer;
-		PhmCamera& camera;
+		Camera& camera;
 		VkDescriptorSet globalDescriptorSet;
 	};
 }

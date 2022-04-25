@@ -10,8 +10,8 @@
 
 namespace phm
 {
-	PhmPipeline::PhmPipeline(
-		PhmDevice& device,
+	Pipeline::Pipeline(
+		Device& device,
 		const std::string& vertFilePath,
 		const std::string& fragFilePath,
 		const PipelineConfigInfo& configInfo
@@ -21,14 +21,14 @@ namespace phm
 		createGraphicsPipeline(vertFilePath, fragFilePath, configInfo);
 	}
 
-	PhmPipeline::~PhmPipeline()
+	Pipeline::~Pipeline()
 	{
 		vkDestroyShaderModule(device_.device(), vertexShaderModule_, nullptr);
 		vkDestroyShaderModule(device_.device(), fragmentShaderModule_, nullptr);
 		vkDestroyPipeline(device_.device(), graphicsPipeline_, nullptr);
 	}
 
-	void PhmPipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo)
+	void Pipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo)
 	{
 		assert(
 			configInfo.pipelineLayout != VK_NULL_HANDLE &&
@@ -66,8 +66,8 @@ namespace phm
 		shaderStages[1].pSpecializationInfo = nullptr;
 
 		// Initiate the vertex input info
-		auto bindingDescriptions = PhmModel::Vertex::getBindingDescriptions();
-		auto attributeDescriptions = PhmModel::Vertex::getAttributeDescriptions();
+		auto bindingDescriptions = Model::Vertex::getBindingDescriptions();
+		auto attributeDescriptions = Model::Vertex::getAttributeDescriptions();
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -104,7 +104,7 @@ namespace phm
 
 	}
 
-	std::vector<char> PhmPipeline::readFile(const std::string& filename)
+	std::vector<char> Pipeline::readFile(const std::string& filename)
 	{
 		// Read in binary and start at the end of the file
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -130,7 +130,7 @@ namespace phm
 		return buffer;
 	}
 
-	void PhmPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	void Pipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
 	{
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -143,7 +143,7 @@ namespace phm
 		}
 	}
 
-	void PhmPipeline::bind(VkCommandBuffer commandBuffer)
+	void Pipeline::bind(VkCommandBuffer commandBuffer)
 	{
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_);
 	}
@@ -152,7 +152,7 @@ namespace phm
 	/// Takes in a reference to a configInfo object and writes default values to it.
 	/// </summary>
 	/// <param name="configInfo">The reference to be written to. </param>
-	void phm::PhmPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
+	void phm::Pipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 	{
 		// Initiate the input assembly info.
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

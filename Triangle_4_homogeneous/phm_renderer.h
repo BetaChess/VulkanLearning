@@ -11,14 +11,14 @@
 
 namespace phm
 {
-	class PhmRenderer
+	class Renderer
 	{
 	public:
-		PhmRenderer(PhmWindow& window, PhmDevice& device);
-		~PhmRenderer();
+		Renderer(Window& window, Device& device);
+		~Renderer();
 
-		PhmRenderer(const PhmRenderer&) = delete;
-		PhmRenderer& operator=(const PhmRenderer&) = delete;
+		Renderer(const Renderer&) = delete;
+		Renderer& operator=(const Renderer&) = delete;
 
 		inline VkRenderPass getSwapChainRenderPass() const { return swapchain_->getRenderPass(); };
 		inline bool isFrameInProgress() const { return isFrameStarted_; };
@@ -39,9 +39,9 @@ namespace phm
 		void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
 	private:
-		PhmWindow& window_; // The renderer has an aggregate relation to the window an device.
-		PhmDevice& device_; // ^^^
-		std::unique_ptr<PhmSwapchain> swapchain_;
+		Window& window_; // The renderer has an aggregate relation to the window an device.
+		Device& device_; // ^^^
+		std::unique_ptr<Swapchain> swapchain_;
 		std::vector<VkCommandBuffer> commandBuffers_;
 
 		uint32_t currentImageIndex_ = 0;

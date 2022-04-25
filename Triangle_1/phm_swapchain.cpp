@@ -11,13 +11,13 @@
 
 namespace phm
 {
-	PhmSwapchain::PhmSwapchain(PhmDevice& deviceRef, VkExtent2D windowExtent)
+	Swapchain::Swapchain(Device& deviceRef, VkExtent2D windowExtent)
 		: device_(deviceRef), windowExtent_(windowExtent)
 	{
 		init();
 	}
 
-	PhmSwapchain::PhmSwapchain(PhmDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<PhmSwapchain> previous)
+	Swapchain::Swapchain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<Swapchain> previous)
 		: device_(deviceRef), windowExtent_(windowExtent), oldSwapChain_(previous)
 	{
 		init();
@@ -25,7 +25,7 @@ namespace phm
 		oldSwapChain_ = nullptr;
 	}
 
-	void PhmSwapchain::init()
+	void Swapchain::init()
 	{
 		createSwapChain();
 		createImageViews();
@@ -35,7 +35,7 @@ namespace phm
 		createSyncObjects();
 	}
 
-	PhmSwapchain::~PhmSwapchain()
+	Swapchain::~Swapchain()
 	{
 		for (auto imageView : swapChainImageViews_)
 		{
@@ -77,7 +77,7 @@ namespace phm
 	/// </summary>
 	/// <param name="imageIndex">: The memory location the index should be written to. </param>
 	/// <returns>The VkResult of the operation. </returns>
-	VkResult PhmSwapchain::acquireNextImage(uint32_t* imageIndex)
+	VkResult Swapchain::acquireNextImage(uint32_t* imageIndex)
 	{
 		// The next image may already be in fligh, so we wait for the fence to signal that the image is ready.
 		vkWaitForFences(
@@ -108,7 +108,7 @@ namespace phm
 	/// <param name="buffers">: The buffer(s) to be submited (only a single one for now). </param>
 	/// <param name="imageIndex">: The index of the image to render. </param>
 	/// <returns>The result of the vkQueuePresentKHR operation. </returns>
-	VkResult PhmSwapchain::submitCommandBuffers(
+	VkResult Swapchain::submitCommandBuffers(
 		const VkCommandBuffer* buffers, uint32_t* imageIndex)
 	{
 		// First we check that the fence of the current image is not signaled. If it's not, we will have to wait for it.
@@ -180,7 +180,7 @@ namespace phm
 		return result;
 	}
 
-	void PhmSwapchain::createSwapChain()
+	void Swapchain::createSwapChain()
 	{ 
 		// Queries the device for swapchain support details.
 		SwapChainSupportDetails swapChainSupport = device_.getSwapChainSupport();
@@ -259,7 +259,7 @@ namespace phm
 		swapChainExtent_ = extent;
 	}
 
-	void PhmSwapchain::createImageViews()
+	void Swapchain::createImageViews()
 	{
 		swapChainImageViews_.resize(swapChainImages_.size());
 
@@ -285,7 +285,7 @@ namespace phm
 		}
 	}
 
-	void PhmSwapchain::createRenderPass()
+	void Swapchain::createRenderPass()
 	{
 		VkAttachmentDescription depthAttachment{};
 		depthAttachment.format = findDepthFormat();
@@ -347,7 +347,7 @@ namespace phm
 		}
 	}
 
-	void PhmSwapchain::createFramebuffers()
+	void Swapchain::createFramebuffers()
 	{
 		swapChainFramebuffers_.resize(imageCount());
 
@@ -376,7 +376,7 @@ namespace phm
 		}
 	}
 
-	void PhmSwapchain::createDepthResources()
+	void Swapchain::createDepthResources()
 	{
 		VkFormat depthFormat = findDepthFormat();
 		VkExtent2D swapChainExtent_ = getSwapChainExtent();
@@ -427,7 +427,7 @@ namespace phm
 		}
 	}
 
-	void PhmSwapchain::createSyncObjects()
+	void Swapchain::createSyncObjects()
 	{
 		imageAvailableSemaphores_.resize(MAX_FRAMES_IN_FLIGHT);
 		renderFinishedSemaphores_.resize(MAX_FRAMES_IN_FLIGHT);
@@ -454,7 +454,7 @@ namespace phm
 		}
 	}
 
-	VkSurfaceFormatKHR PhmSwapchain::chooseSwapSurfaceFormat(
+	VkSurfaceFormatKHR Swapchain::chooseSwapSurfaceFormat(
 		const std::vector<VkSurfaceFormatKHR>& availableFormats)
 	{
 		for (const auto& availableFormat : availableFormats)
@@ -469,7 +469,7 @@ namespace phm
 		return availableFormats[0];
 	}
 
-	VkPresentModeKHR PhmSwapchain::chooseSwapPresentMode(
+	VkPresentModeKHR Swapchain::chooseSwapPresentMode(
 		const std::vector<VkPresentModeKHR>& availablePresentModes)
 	{
 		for (const auto& availablePresentMode : availablePresentModes)
@@ -485,7 +485,7 @@ namespace phm
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 
-	VkExtent2D PhmSwapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+	VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
 		{
@@ -505,7 +505,7 @@ namespace phm
 		}
 	}
 
-	VkFormat PhmSwapchain::findDepthFormat()
+	VkFormat Swapchain::findDepthFormat()
 	{
 		return device_.findSupportedFormat(
 			{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },

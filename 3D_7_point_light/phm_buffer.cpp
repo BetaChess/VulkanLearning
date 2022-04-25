@@ -18,7 +18,7 @@ namespace phm
 	/// </summary>
 	/// <param name="instanceSize">instanceSize The size of an instance</param>
 	/// <param name="minOffsetAlignment">minOffsetAlignment The minimum required alignment, in bytes, for the offset member (eg. minUniformBufferOffsetAlignment)</param>
-	VkDeviceSize PhmBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment)
+	VkDeviceSize Buffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment)
 	{
 		if (minOffsetAlignment > 0)
 		{
@@ -27,8 +27,8 @@ namespace phm
 		return instanceSize;
 	}
 
-	PhmBuffer::PhmBuffer(
-		PhmDevice& device,
+	Buffer::Buffer(
+		Device& device,
 		VkDeviceSize instanceSize,
 		uint32_t instanceCount,
 		VkBufferUsageFlags usageFlags,
@@ -44,7 +44,7 @@ namespace phm
 		device.createBuffer(bufferSize_, usageFlags, memoryPropertyFlags, buffer_, memory_);
 	}
 
-	PhmBuffer::~PhmBuffer()
+	Buffer::~Buffer()
 	{
 		unmap();
 		vkDestroyBuffer(device_.device(), buffer_, nullptr);
@@ -56,7 +56,7 @@ namespace phm
 	/// </summary>
 	/// <param name="size">(Optional) Size of the memory range to map. Pass VK_WHOLE_SIZE to map the complete</param>
 	/// <param name="offset">(Optional) Byte offset from beginning</param>
-	VkResult PhmBuffer::map(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::map(VkDeviceSize size, VkDeviceSize offset)
 	{
 		assert(buffer_ && memory_ && "Called map on buffer before create");
 		return vkMapMemory(device_.device(), memory_, offset, size, 0, &mapped_);
@@ -65,7 +65,7 @@ namespace phm
 	/// <summary>
 	/// Unmap the mapped memory range
 	/// </summary>
-	void PhmBuffer::unmap()
+	void Buffer::unmap()
 	{
 		if (mapped_)
 		{
@@ -80,7 +80,7 @@ namespace phm
 	/// <param name="data">Pointer to the data to copy</param>
 	/// <param name="size">(Optional) Size of the data to copy. Pass VK_WHOLE_SIZE to flush the complete buffer</param>
 	/// <param name="offset">(Optional) Byte offset from beginning of mapped region</param>
-	void PhmBuffer::writeToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
+	void Buffer::writeToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
 	{
 		assert(mapped_ && "Cannot copy to unmapped buffer");
 
@@ -101,7 +101,7 @@ namespace phm
 	/// </summary>
 	/// <param name="size">(Optional) Size of the memory range to flush. Pass VK_WHOLE_SIZE to flush the complete buffer range.</param>
 	/// <param name="offset">(Optional) Byte offset from beginning</param>
-	VkResult PhmBuffer::flush(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::flush(VkDeviceSize size, VkDeviceSize offset)
 	{
 		VkMappedMemoryRange mappedRange = {};
 		mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -116,7 +116,7 @@ namespace phm
 	/// </summary>
 	/// <param name="size">(Optional) Size of the memory range to invalidate. Pass VK_WHOLE_SIZE to invalidate the complete buffer range.</param>
 	/// <param name="offset">(Optional) Byte offset from beginning</param>
-	VkResult PhmBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::invalidate(VkDeviceSize size, VkDeviceSize offset)
 	{
 		VkMappedMemoryRange mappedRange = {};
 		mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -132,7 +132,7 @@ namespace phm
 	/// <param name="size">(Optional) Size of the memory range of the descriptor</param>
 	/// <param name="offset">(Optional) Byte offset from beginning</param>
 	/// <returns>VkDescriptorBufferInfo of specified offset and range</returns>
-	VkDescriptorBufferInfo PhmBuffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset)
+	VkDescriptorBufferInfo Buffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset)
 	{
 		return VkDescriptorBufferInfo{
 			buffer_,
@@ -146,7 +146,7 @@ namespace phm
 	/// </summary>
 	/// <param name="data">Pointer to the data to copy</param>
 	/// <param name="index">Used in offset calculation</param>
-	void PhmBuffer::writeToIndex(void* data, int index)
+	void Buffer::writeToIndex(void* data, int index)
 	{
 		writeToBuffer(data, instanceSize_, index * alignmentSize_);
 	}
@@ -155,14 +155,14 @@ namespace phm
 	/// Flush the memory range at index * alignmentSize of the buffer to make it visible to the device
 	/// </summary>
 	/// <param name="index">Used in offset calculation</param>
-	VkResult PhmBuffer::flushIndex(int index) { return flush(alignmentSize_, index * alignmentSize_); }
+	VkResult Buffer::flushIndex(int index) { return flush(alignmentSize_, index * alignmentSize_); }
 
 	/// <summary>
 	/// Create a buffer info descriptor
 	/// </summary>
 	/// <param name="index">Specifies the region given by index * alignmentSize</param>
 	/// <returns>VkDescriptorBufferInfo for instance at index</returns>
-	VkDescriptorBufferInfo PhmBuffer::descriptorInfoForIndex(int index)
+	VkDescriptorBufferInfo Buffer::descriptorInfoForIndex(int index)
 	{
 		return descriptorInfo(alignmentSize_, index * alignmentSize_);
 	}
@@ -171,7 +171,7 @@ namespace phm
 	/// Invalidate a memory range of the buffer to make it visible to the host - Note: Only required for non-coherent 
 	/// </summary>
 	/// <param name="index">Specifies the region to invalidate: index * alignmentSize</param>
-	VkResult PhmBuffer::invalidateIndex(int index)
+	VkResult Buffer::invalidateIndex(int index)
 	{
 		return invalidate(alignmentSize_, index * alignmentSize_);
 	}

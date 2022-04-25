@@ -21,7 +21,7 @@ namespace phm
 		glm::mat4 normalMatrix{ 1.0f };
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(PhmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
+	SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
 		: device_(device)
 	{
 		createPipelineLayout(globalSetLayout);
@@ -64,11 +64,11 @@ namespace phm
 		);
 
 		phm::PipelineConfigInfo pipelineConfig{};
-		PhmPipeline::defaultPipelineConfigInfo(pipelineConfig);
+		Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = pipelineLayout_;
 
-		pipeline_ = std::make_unique<PhmPipeline>(
+		pipeline_ = std::make_unique<Pipeline>(
 			device_,
 			"shaders/simple_shader.vert.spv",
 			"shaders/simple_shader.frag.spv",
@@ -79,7 +79,7 @@ namespace phm
 
 	void SimpleRenderSystem::renderObjects(
 		const FrameInfo& frameInfo, 
-		const std::vector<PhmObject>& objects)
+		const std::vector<Object>& objects)
 	{
 		pipeline_->bind(frameInfo.commandBuffer);
 

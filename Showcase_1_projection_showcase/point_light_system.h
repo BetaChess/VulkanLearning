@@ -16,7 +16,7 @@ namespace phm
 	{
 
 	public:
-		PointLightSystem(PhmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
+		PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~PointLightSystem();
 
 		PointLightSystem(const PointLightSystem&) = delete;
@@ -25,9 +25,9 @@ namespace phm
 		void renderObjects(const FrameInfo& frameInfo);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 
-		std::unique_ptr<PhmPipeline> pipeline_;
+		std::unique_ptr<Pipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

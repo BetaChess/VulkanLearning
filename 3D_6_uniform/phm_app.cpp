@@ -28,9 +28,9 @@ namespace phm
 
 	Application::Application()
 	{
-		globalPool_ = PhmDescriptorPool::Builder(device_)
-			.setMaxSets(PhmSwapchain::MAX_FRAMES_IN_FLIGHT)
-			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, PhmSwapchain::MAX_FRAMES_IN_FLIGHT)
+		globalPool_ = DescriptorPool::Builder(device_)
+			.setMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 
 		loadObjects();
@@ -42,36 +42,36 @@ namespace phm
 
 	void Application::run()
 	{
-		std::vector<std::unique_ptr<PhmBuffer>> uniformBuffers(PhmSwapchain::MAX_FRAMES_IN_FLIGHT);
+		std::vector<std::unique_ptr<Buffer>> uniformBuffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
 		for (auto& bufferPtr : uniformBuffers)
 		{
-			bufferPtr = std::make_unique<PhmBuffer>(device_,
+			bufferPtr = std::make_unique<Buffer>(device_,
 				sizeof(GlobalUbo),
-				PhmSwapchain::MAX_FRAMES_IN_FLIGHT,
+				Swapchain::MAX_FRAMES_IN_FLIGHT,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
 				device_.properties.limits.minUniformBufferOffsetAlignment);
 			bufferPtr->map();
 		}
 
-		auto globalSetLayout = PhmDescriptorSetLayout::Builder(device_)
+		auto globalSetLayout = DescriptorSetLayout::Builder(device_)
 			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
 			.build();
 
-		std::vector<VkDescriptorSet> globalDescriptorSets(PhmSwapchain::MAX_FRAMES_IN_FLIGHT);
+		std::vector<VkDescriptorSet> globalDescriptorSets(Swapchain::MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < globalDescriptorSets.size(); i++)
 		{
 			auto bufferInfo = uniformBuffers[i]->descriptorInfo();
-			PhmDescriptorWriter(*globalSetLayout, *globalPool_)
+			DescriptorWriter(*globalSetLayout, *globalPool_)
 				.writeBuffer(0, &bufferInfo)
 				.build(globalDescriptorSets[i]);
 		}
 
 		SimpleRenderSystem simpleRenderSystem{ device_, renderer_.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
 
-		PhmCamera camera{};
-		PhmObject viewerObject;
-		PhmKeyboardController cameraController{};
+		Camera camera{};
+		Object viewerObject;
+		KeyboardController cameraController{};
 
 		Time time;
 
@@ -120,9 +120,9 @@ namespace phm
 
 	void Application::loadObjects()
 	{
-		std::shared_ptr<PhmModel> model = PhmModel::createModelFromFile(device_, "models/smooth_vase.obj");
+		std::shared_ptr<Model> model = Model::createModelFromFile(device_, "models/smooth_vase.obj");
 
-		PhmObject object;
+		Object object;
 		object.model = model;
 		object.transform.translation = { 0.0f, 0.0f, 1.5f };
 		object.transform.scale = glm::vec3(3);

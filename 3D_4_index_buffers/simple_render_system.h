@@ -15,7 +15,7 @@ namespace phm
 	{
 
 	public:
-		SimpleRenderSystem(PhmDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(Device& device, VkRenderPass renderPass);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -23,13 +23,13 @@ namespace phm
 
 		void renderObjects(
 			VkCommandBuffer commandBuffer, 
-			const std::vector<PhmObject>& objects, 
-			const PhmCamera& camera);
+			const std::vector<Object>& objects, 
+			const Camera& camera);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 
-		std::unique_ptr<PhmPipeline> pipeline_;
+		std::unique_ptr<Pipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 
 		void createPipelineLayout();

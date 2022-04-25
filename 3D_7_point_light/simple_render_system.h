@@ -16,7 +16,7 @@ namespace phm
 	{
 
 	public:
-		SimpleRenderSystem(PhmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
+		SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -24,12 +24,12 @@ namespace phm
 
 		void renderObjects(
 			const FrameInfo& frameInfo, 
-			const std::vector<PhmObject>& objects);
+			const std::vector<Object>& objects);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 
-		std::unique_ptr<PhmPipeline> pipeline_;
+		std::unique_ptr<Pipeline> pipeline_;
 		VkPipelineLayout pipelineLayout_;
 
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

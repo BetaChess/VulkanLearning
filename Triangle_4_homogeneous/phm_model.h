@@ -11,7 +11,7 @@
 
 namespace phm
 {
-	class PhmModel
+	class Model
 	{
 	public:
 
@@ -27,11 +27,11 @@ namespace phm
 
 		// Constructors
 
-		PhmModel(PhmDevice& device, const std::vector<Vertex>& vertices);
-		~PhmModel();
+		Model(Device& device, const std::vector<Vertex>& vertices);
+		~Model();
 
-		PhmModel(const PhmModel&) = delete;
-		PhmModel& operator=(const PhmModel&) = delete;
+		Model(const Model&) = delete;
+		Model& operator=(const Model&) = delete;
 
 		// Public methods
 
@@ -39,7 +39,7 @@ namespace phm
 		void draw(VkCommandBuffer commandBuffer);
 
 	private:
-		PhmDevice& device_;
+		Device& device_;
 		VkBuffer vertexBuffer_;
 		VkDeviceMemory vertexBufferMemory_;
 		uint32_t vertexCount_;

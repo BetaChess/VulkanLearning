@@ -64,10 +64,10 @@ private:
 
 namespace phm
 {
-	class PhmObject
+	class Object
 	{
 	public:
-		std::shared_ptr<PhmModel> model{};
+		std::shared_ptr<Model> model{};
 		glm::vec3 color{};
 		Transform2D transform{};
 	};

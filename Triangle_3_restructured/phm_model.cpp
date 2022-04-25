@@ -3,7 +3,7 @@
 namespace phm
 {
 
-	std::vector<VkVertexInputBindingDescription> PhmModel::Vertex::getBindingDescriptions()
+	std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions()
 	{
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
 
@@ -14,7 +14,7 @@ namespace phm
 		return bindingDescriptions;
 	}
 
-	std::vector<VkVertexInputAttributeDescription> PhmModel::Vertex::getAttributeDescriptions()
+	std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions()
 	{
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
 
@@ -34,31 +34,31 @@ namespace phm
 	}
 
 
-	PhmModel::PhmModel(PhmDevice& device, const std::vector<Vertex>& vertices)
+	Model::Model(Device& device, const std::vector<Vertex>& vertices)
 		: device_(device)
 	{
 		createVertexBuffers(vertices);
 	}
 
-	PhmModel::~PhmModel()
+	Model::~Model()
 	{
 		vkDestroyBuffer(device_.device(), vertexBuffer_, nullptr);
 		vkFreeMemory(device_.device(), vertexBufferMemory_, nullptr);
 	}
 
-	void PhmModel::bind(VkCommandBuffer commandBuffer)
+	void Model::bind(VkCommandBuffer commandBuffer)
 	{
 		VkBuffer buffers[] = { vertexBuffer_ };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 	}
 
-	void PhmModel::draw(VkCommandBuffer commandBuffer)
+	void Model::draw(VkCommandBuffer commandBuffer)
 	{
 		vkCmdDraw(commandBuffer, vertexCount_, 1, 0, 0);
 	}
 
-	void PhmModel::createVertexBuffers(const std::vector<Vertex>& vertices)
+	void Model::createVertexBuffers(const std::vector<Vertex>& vertices)
 	{
 		vertexCount_ = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount_ > 2 && "Vertex Count must be at least 3");

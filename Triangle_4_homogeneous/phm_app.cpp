@@ -11,7 +11,7 @@
 #include <array>
 #include <iostream>
 
-std::vector<phm::PhmModel::Vertex> sierpinskiTriangle(std::array<phm::PhmModel::Vertex, 3> initialTriangle, size_t depth)
+std::vector<phm::Model::Vertex> sierpinskiTriangle(std::array<phm::Model::Vertex, 3> initialTriangle, size_t depth)
 {
 	if (depth == 0)
 		return { initialTriangle[0], initialTriangle[1], initialTriangle[2] };
@@ -101,7 +101,7 @@ std::vector<phm::PhmModel::Vertex> sierpinskiTriangle(std::array<phm::PhmModel::
 			}
 		}, depth - 1);
 
-	std::vector<phm::PhmModel::Vertex> retVec;
+	std::vector<phm::Model::Vertex> retVec;
 	retVec.insert(retVec.end(), triangles1.begin(), triangles1.end());
 	retVec.insert(retVec.end(), triangles2.begin(), triangles2.end());
 	retVec.insert(retVec.end(), triangles3.begin(), triangles3.end());
@@ -146,22 +146,22 @@ namespace phm
 
 	void Application::loadObjects()
 	{
-		std::vector<PhmModel::Vertex> vertices = sierpinskiTriangle(
+		std::vector<Model::Vertex> vertices = sierpinskiTriangle(
 			{ { 
 				{{0.0f, -0.5f, 1.0f}, {1.0f, 0.0f, 0.0f}},
 				{{0.5f, 0.5f, 1.0f}, {0.0f, 1.0f, 0.0f}},
 				{{-0.5f, 0.5f, 1.0f}, {0.0f, 0.0f, 1.0f}}
 			} }, 6);
 
-		/*std::vector<PhmModel::Vertex> vertices = {
+		/*std::vector<Model::Vertex> vertices = {
 			{{0.0f, -0.5f, 1.0f}, {1.0f, 0.0f, 0.0f}},
 			{{0.5f, 0.5f, 1.0f}, {0.0f, 1.0f, 0.0f}},
 			{{-0.5f, 0.5f, 1.0f}, {0.0f, 0.0f, 1.0f}}
 		};*/
 		
-		auto model = std::make_shared<PhmModel>(device_, vertices);
+		auto model = std::make_shared<Model>(device_, vertices);
 
-		PhmObject obj{};
+		Object obj{};
 		obj.model = model;
 		obj.color = { 0.7f, 0.8f,0.15f };
 		obj.transform.translation.x = 0.0f;

@@ -7,7 +7,7 @@
 
 namespace phm
 {
-	void PhmCamera::setOrthographicProjection(
+	void Camera::setOrthographicProjection(
 		float left, float right, float top, float bottom, float near, float far) {
 		projectionMatrix_ = glm::mat4{ 1.0f };
 		projectionMatrix_[0][0] = 2.f / (right - left);
@@ -18,7 +18,7 @@ namespace phm
 		projectionMatrix_[3][2] = -near / (far - near);
 	}
 
-	void PhmCamera::setPerspectiveProjection(float fovy, float aspect, float near, float far) {
+	void Camera::setPerspectiveProjection(float fovy, float aspect, float near, float far) {
 		assert(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
 		const float tanHalfFovy = tan(fovy / 2.f);
 		projectionMatrix_ = glm::mat4{ 0.0f };
@@ -29,7 +29,7 @@ namespace phm
 		projectionMatrix_[3][2] = -(far * near) / (far - near);
 	}
 
-	void PhmCamera::setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
+	void Camera::setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
 		assert(direction != glm::vec3(0.0f) && "Direction vector cannot be a null vector: setViewDirection");
 
 		// Generate orthonormal basis vectors
@@ -53,7 +53,7 @@ namespace phm
 		viewMatrix_[3][2] = -glm::dot(w, position);
 	}
 
-	void PhmCamera::setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) {
+	void Camera::setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) {
 		// Calculate direction
 		const glm::vec3 direction = target - position;
 		assert(direction != glm::vec3(0.0f) && "Direction vector cannot be a null vector: setViewTarget");
@@ -62,7 +62,7 @@ namespace phm
 		setViewDirection(position, direction, up);
 	}
 
-	void PhmCamera::setViewYXZ(glm::vec3 position, glm::vec3 rotation) {
+	void Camera::setViewYXZ(glm::vec3 position, glm::vec3 rotation) {
 		const float c3 = glm::cos(rotation.z);
 		const float s3 = glm::sin(rotation.z);
 		const float c2 = glm::cos(rotation.x);

@@ -15,9 +15,9 @@
 namespace std
 {
 	template<>
-	struct hash<phm::PhmModel::Vertex>
+	struct hash<phm::Model::Vertex>
 	{
-		size_t operator()(const phm::PhmModel::Vertex& vertex) const
+		size_t operator()(const phm::Model::Vertex& vertex) const
 		{
 			size_t seed = 0;
 			phm::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
@@ -29,7 +29,7 @@ namespace std
 namespace phm
 {
 
-	std::vector<VkVertexInputBindingDescription> PhmModel::Vertex::getBindingDescriptions()
+	std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions()
 	{
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
 
@@ -40,7 +40,7 @@ namespace phm
 		return bindingDescriptions;
 	}
 
-	std::vector<VkVertexInputAttributeDescription> PhmModel::Vertex::getAttributeDescriptions()
+	std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions()
 	{
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
@@ -52,24 +52,24 @@ namespace phm
 		return attributeDescriptions;
 	}
 
-	bool PhmModel::Vertex::operator==(const Vertex& other) const
+	bool Model::Vertex::operator==(const Vertex& other) const
 	{
 		return position == other.position && color == other.color && normal == other.normal && uv == other.uv;
 	}
 
 
-	PhmModel::PhmModel(PhmDevice& device, const PhmModel::Builder& builder)
+	Model::Model(Device& device, const Model::Builder& builder)
 		: device_(device)
 	{
 		createVertexBuffers(builder.vertices);
 		createIndexBuffers(builder.indices);
 	}
 
-	PhmModel::~PhmModel()
+	Model::~Model()
 	{
 	}
 
-	std::unique_ptr<PhmModel> PhmModel::createModelFromFile(PhmDevice& device, std::string_view filePath)
+	std::unique_ptr<Model> Model::createModelFromFile(Device& device, std::string_view filePath)
 	{
 		Builder builder{};
 		builder.loadModel(filePath);
@@ -78,10 +78,10 @@ namespace phm
 		DebugPrint("Vertex count: " << builder.vertices.size());
 		DebugPrint("Index buffer length: " << builder.indices.size());
 
-		return std::make_unique<PhmModel>(device, builder);
+		return std::make_unique<Model>(device, builder);
 	}
 
-	void PhmModel::bind(VkCommandBuffer commandBuffer)
+	void Model::bind(VkCommandBuffer commandBuffer)
 	{
 		VkBuffer buffers[] = { vertexBuffer_->getBuffer() };
 		VkDeviceSize offsets[] = { 0 };
@@ -93,7 +93,7 @@ namespace phm
 		}
 	}
 
-	void PhmModel::draw(VkCommandBuffer commandBuffer)
+	void Model::draw(VkCommandBuffer commandBuffer)
 	{
 		if (hasIndexBuffer)
 			vkCmdDrawIndexed(commandBuffer, indexCount_, 1, 0, 0, 0);
@@ -101,7 +101,7 @@ namespace phm
 			vkCmdDraw(commandBuffer, vertexCount_, 1, 0, 0);
 	}
 
-	void PhmModel::createVertexBuffers(const std::vector<Vertex>& vertices)
+	void Model::createVertexBuffers(const std::vector<Vertex>& vertices)
 	{
 		vertexCount_ = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount_ > 2 && "Vertex Count must be at least 3");
@@ -111,7 +111,7 @@ namespace phm
 		uint32_t vertexSize = sizeof(vertices[0]);
 
 		// Create staging buffer for transfer to the GPU
-		PhmBuffer stagingBuffer{
+		Buffer stagingBuffer{
 			device_,
 			vertexSize,
 			vertexCount_,
@@ -124,7 +124,7 @@ namespace phm
 		stagingBuffer.writeToBuffer((void*)vertices.data());
 
 		// Create the actual memory buffer on the GPU
-		vertexBuffer_ = std::make_unique<PhmBuffer>(
+		vertexBuffer_ = std::make_unique<Buffer>(
 			device_,
 			vertexSize,
 			vertexCount_,
@@ -136,7 +136,7 @@ namespace phm
 		device_.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer_->getBuffer(), stagingBuffer.getBufferSize());
 	}
 
-	void PhmModel::createIndexBuffers(const std::vector<uint32_t>& indices)
+	void Model::createIndexBuffers(const std::vector<uint32_t>& indices)
 	{
 		indexCount_ = static_cast<uint32_t>(indices.size());
 		hasIndexBuffer = indexCount_ > 0;
@@ -147,7 +147,7 @@ namespace phm
 		uint32_t indexSize = sizeof(indices[0]);
 
 		// Create staging buffer for transfer to the GPU
-		PhmBuffer stagingBuffer{
+		Buffer stagingBuffer{
 			device_,
 			indexSize,
 			indexCount_,
@@ -160,7 +160,7 @@ namespace phm
 		stagingBuffer.writeToBuffer((void*)indices.data());
 
 		// Create the actual memory buffer on the GPU
-		indexBuffer_ = std::make_unique<PhmBuffer>(
+		indexBuffer_ = std::make_unique<Buffer>(
 			device_,
 			indexSize,
 			indexCount_,
@@ -172,7 +172,7 @@ namespace phm
 		device_.copyBuffer(stagingBuffer.getBuffer(), indexBuffer_->getBuffer(), stagingBuffer.getBufferSize());
 	}
 
-	void PhmModel::Builder::loadModel(std::string_view filePath)
+	void Model::Builder::loadModel(std::string_view filePath)
 	{
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;

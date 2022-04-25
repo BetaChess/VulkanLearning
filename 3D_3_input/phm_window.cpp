@@ -5,13 +5,13 @@
 
 namespace phm
 {
-	PhmWindow::PhmWindow(size_t w, size_t h, std::string name)
+	Window::Window(size_t w, size_t h, std::string name)
 		: width_(w), height_(h), windowName_(name)
 	{
 		initWindow();
 	}
 
-	PhmWindow::~PhmWindow()
+	Window::~Window()
 	{
 		// Destroy the window instance
 		glfwDestroyWindow(window_);
@@ -20,7 +20,7 @@ namespace phm
 
 	}
 
-	void PhmWindow::initWindow()
+	void Window::initWindow()
 	{
 		glfwInit();
 		// We're not using openGL, so disable it.
@@ -34,7 +34,7 @@ namespace phm
 		glfwSetFramebufferSizeCallback(window_, framebufferResizeCallback);
 	}
 
-	void PhmWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+	void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
 	{
 		if (glfwCreateWindowSurface(instance, window_, nullptr, surface) != VK_SUCCESS)
 		{
@@ -47,9 +47,9 @@ namespace phm
 	/// </summary>
 	/// <param name="width">The new width of the window</param>
 	/// <param name="height">The new height of the window</param>
-	void PhmWindow::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+	void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
-		auto phmWindow = reinterpret_cast<PhmWindow*>(glfwGetWindowUserPointer(window));
+		auto phmWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 
 		phmWindow->frameBufferResized_ = true;
 		phmWindow->width_ = width;
