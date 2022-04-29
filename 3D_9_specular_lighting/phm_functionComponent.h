@@ -5,6 +5,9 @@
 
 #include "phm_component.h"
 
+#define FUNCTIONCOMPONENTLAMDA(paramCount, paramType) [=](ecs::Entity& e, const std::array<paramType, paramCount>& constParams)
+#define FUNCTIONCOMPONENTLAMDA(paramCount, paramType, constParamName) [=](ecs::Entity& e, const std::array<paramType, paramCount>& constParamName)
+
 namespace phm
 {
 	namespace ecs

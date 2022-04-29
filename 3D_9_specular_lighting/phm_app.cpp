@@ -162,8 +162,7 @@ namespace phm
 			e.transform.scale = glm::vec3{ 3.0f, 1.0f, 3.0f };
 		}
 		{
-			std::function rotateFunc =
-				[&](ecs::Entity& e, const std::array<const int, 1>& lightOffset)
+			std::function rotateFunc = FUNCTIONCOMPONENTLAMDA(1, const int, lightOffset)
 			{
 				constexpr int numberOfLights = 3;
 				constexpr float rotationSpeed = 1.3f;
