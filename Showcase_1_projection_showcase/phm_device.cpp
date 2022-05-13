@@ -235,11 +235,12 @@ namespace phm
 			candidates.insert(std::make_pair(score, device));
 		}
 
+		// Get the physical properties
+		VkPhysicalDeviceProperties deviceProperties;
+		vkGetPhysicalDeviceProperties(candidates.rbegin()->second, &deviceProperties);
+
 		// Print the name of the chosen GPU
 		{
-			VkPhysicalDeviceProperties deviceProperties;
-			vkGetPhysicalDeviceProperties(candidates.rbegin()->second, &deviceProperties);
-
 			std::cout << "Best GPU found is: " << deviceProperties.deviceName << std::endl;
 		}
 
@@ -247,6 +248,7 @@ namespace phm
 		if (candidates.rbegin()->first > 0)
 		{
 			physicalDevice_ = candidates.rbegin()->second;
+			properties = deviceProperties;
 		}
 		else
 		{

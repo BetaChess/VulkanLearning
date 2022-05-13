@@ -89,14 +89,28 @@ source_group("Engine" FILES
     "phm_camera.h"
     "phm_model.cpp"
     "phm_model.h"
-    "phm_object.cpp"
-    "phm_object.h"
     "phm_renderer.cpp"
     "phm_renderer.h"
     "phm_frame_info.h"
     "time.cpp"
     "time.h"
 )
+
+source_group("Entity Component System" FILES
+    "phm_component.h"
+	"phm_entity.h"
+	"phm_entity.cpp"
+	"phm_manager.h"
+	"phm_manager.cpp"
+	"phm_transform.h"
+	"phm_transform.cpp"
+)
+
+source_group("Entity Component System/Components" FILES
+    "phm_functionComponent.h"
+	"phm_pointLightComponent.h"
+)
+
 
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES

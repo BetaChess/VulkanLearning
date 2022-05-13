@@ -41,37 +41,6 @@ namespace phm
 
 	void Application::run()
 	{
-		//std::vector<std::unique_ptr<Buffer>> uniformBuffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
-		/*for (auto& bufferPtr : uniformBuffers)
-		{
-			bufferPtr = std::make_unique<Buffer>(device_,
-				sizeof(GlobalUbo),
-				Swapchain::MAX_FRAMES_IN_FLIGHT,
-				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-				device_.properties.limits.minUniformBufferOffsetAlignment);
-			bufferPtr->map();
-		}*/
-
-		/*auto globalSetLayout = DescriptorSetLayout::Builder(device_)
-			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
-			.build();
-
-		std::vector<VkDescriptorSet> globalDescriptorSets(Swapchain::MAX_FRAMES_IN_FLIGHT);
-		for (size_t i = 0; i < globalDescriptorSets.size(); i++)
-		{
-			auto bufferInfo = uniformBuffers[i]->descriptorInfo();
-			DescriptorWriter(*globalSetLayout, *globalPool_)
-				.writeBuffer(0, &bufferInfo)
-				.build(globalDescriptorSets[i]);
-		}*/
-
-		//SimpleRenderSystem simpleRenderSystem{ device_, renderer_.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
-		//PointLightSystem pointLightSystem{ device_, renderer_.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
-
-		// Make the ECS manager
-		//ecs::Manager entityManager{ device_, renderer_.getSwapChainRenderPass(), globalPool_.get() };
-		
 		// Set up the camera/viewer
 		Camera camera{};
 		auto& viewerEntity = entityManager_.addEntity();
@@ -81,13 +50,6 @@ namespace phm
 		
 		viewerEntity.transform.translation.z = -2.3f;
 		viewerEntity.transform.translation.y = -0.5f;
-		
-		//Object viewerObject;
-		//viewerObject.transform.translation.z = -2.3f;
-		//viewerObject.transform.translation.y = -0.5f;
-		/*KeyboardController cameraController{};*/
-
-		
 
 		Time time;
 
@@ -98,12 +60,6 @@ namespace phm
 			glfwPollEvents();
 
 			time.updateTime();
-
-			//cameraController.moveInPlaneXZ(window_.getGLFWWindow(), time.deltaTime(), viewerObject);
-			//camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
-
-			/*float aspect = renderer_.getAspectRatio();
-			camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 100.0f);*/
 			
 			// BeginFrame returns a nullptr if the swapchain needs to be recreated. 
 			// This skips the frame draw call, if that's the case.
@@ -118,15 +74,6 @@ namespace phm
 				};
 
 				// Update
-				//currRot += glm::two_pi<float>() / 3.0f * time.deltaTime();
-
-				/*GlobalUbo ubo{};
-				ubo.projection = camera.getProjection();
-				ubo.view = camera.getView();
-				ubo.lightPosition = { cos(currRot) * 1.3f, -1.0f, sin(currRot) * 1.3f };
-				uniformBuffers[frameInfo.frameIndex]->writeToBuffer(&ubo);
-				uniformBuffers[frameInfo.frameIndex]->flush();*/
-
 				entityManager_.update(frameInfo, renderer_, window_.getGLFWWindow());
 				
 				// Render
@@ -164,27 +111,28 @@ namespace phm
 		{
 			std::function rotateFunc = FUNCTIONCOMPONENTLAMDA(1, const int, lightOffset)
 			{
-				constexpr int numberOfLights = 3;
-				constexpr float rotationSpeed = 1.3f;
+				constexpr int numberOfLights = 4;
+				constexpr float rotationSpeed = 0;
 
 				e.transform.translation = 
 				{
-					1.3f * cos(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>())),
+					2.0f * cos(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>())),
 					e.transform.translation.y, 
-					1.3f * sin(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>()))
+					2.0f * sin(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>()))
 				};
 			};
 			
+			// Add the lights
 			{
 				auto& e = entityManager_.addEntity();
-				e.addComponent<ecs::PointlightComponent>(glm::vec3(1.0f, 0.0f, 0.0f), 1.5f, 0.5f);
+				e.addComponent<ecs::PointlightComponent>(glm::vec3(1.0f, 0.0f, 0.0f), 0.7f, 0.01f);
 				e.transform.translation = { 1.3f, -1.0f, 1.3f };
 				const std::array<const int, 1> arr = { 0 };
 				e.addComponent<ecs::FunctionComponent<1>>(rotateFunc, arr);
 			}
 			{
 				auto& e = entityManager_.addEntity();
-				e.addComponent<ecs::PointlightComponent>(glm::vec3(0.0f, 0.0f, 1.0f), 0.5f, 0.1f);
+				e.addComponent<ecs::PointlightComponent>(glm::vec3(0.0f, 0.0f, 1.0f), 0.4f, 0.1f);
 				e.transform.translation = { -1.3f, -1.0f, -1.3f };
 				const std::array<const int, 1> arr = { 1 };
 				e.addComponent<ecs::FunctionComponent<1>>(rotateFunc, arr);
@@ -194,6 +142,13 @@ namespace phm
 				e.addComponent<ecs::PointlightComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.1f, 0.05f);
 				e.transform.translation = { -1.3f, -1.0f, -1.3f };
 				const std::array<const int, 1> arr = { 2 };
+				e.addComponent<ecs::FunctionComponent<1>>(rotateFunc, arr);
+			}
+			{
+				auto& e = entityManager_.addEntity();
+				e.addComponent<ecs::PointlightComponent>(glm::vec3(1.0f, 1.0f, 1.0f), 0.34f, 0.05f);
+				e.transform.translation = { -1.3f, -1.0f, -1.3f };
+				const std::array<const int, 1> arr = { 3 };
 				e.addComponent<ecs::FunctionComponent<1>>(rotateFunc, arr);
 			}
 		}

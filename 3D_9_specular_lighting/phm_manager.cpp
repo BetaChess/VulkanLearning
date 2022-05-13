@@ -70,6 +70,7 @@ namespace phm
 			
 			ubo.projection = activeCamera_->getProjection();
 			ubo.view = activeCamera_->getView();
+			ubo.inverseView = activeCamera_->getInverseView();
 			uniformBuffers[frameInfo.frameIndex]->writeToBuffer(&ubo);
 			uniformBuffers[frameInfo.frameIndex]->flush();
 		}
