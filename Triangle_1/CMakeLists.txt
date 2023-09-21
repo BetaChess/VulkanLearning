@@ -16,19 +16,19 @@ set_target_properties(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME} 
-	PUBLIC $ENV{VULKAN_SDK}/Include/ 
+	PUBLIC $ENV{VULKAN_SDK}/Include/
 	PUBLIC ../vendor/glfw/include/
     PUBLIC ../vendor/glm/
 )
 
 target_link_directories(${PROJECT_NAME}
 	PRIVATE ../vendor/glfw/src
-    PRIVATE $ENV{VULKAN_SDK}/Lib
+    #PRIVATE $ENV{VULKAN_SDK}/Lib
 )
  
 target_link_libraries(${PROJECT_NAME}
 	glfw
-    vulkan-1
+    ${Vulkan_LIBRARY}
 )
 
 # TODO: Add tests and install targets if needed.

@@ -1,5 +1,7 @@
 #include "phm_model.h"
 
+#include <cstring>
+
 namespace phm
 {
 

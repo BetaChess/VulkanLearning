@@ -1,8 +1,9 @@
 #include "pch.h"
 
 #include "phm_manager.h"
-
 #include "phm_pointLightComponent.h"
+
+#include <algorithm>
 
 namespace phm
 {

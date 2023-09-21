@@ -22,8 +22,8 @@
 #include <stdexcept>
 #include <array>
 #include <iostream>
-#include <math.h>
 #include <cmath>
+#include <math.h>
 
 
 namespace phm
@@ -116,9 +116,9 @@ namespace phm
 
 				e.transform.translation = 
 				{
-					2.0f * cos(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>())),
+					2.0f * cos(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmod(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>())),
 					e.transform.translation.y, 
-					2.0f * sin(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmodf(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>()))
+					2.0f * sin(glm::two_pi<float>() / numberOfLights * lightOffset[0] + std::fmod(Time::elapsedTime() * rotationSpeed, glm::two_pi<float>()))
 				};
 			};
 			

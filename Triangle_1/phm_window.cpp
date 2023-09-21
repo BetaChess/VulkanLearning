@@ -2,6 +2,12 @@
 #include "phm_window.h"
 
 #include <stdexcept>
+#include <iostream>
+
+void GLFWErrorCallback(int code, const char* error)
+{
+	std::cout << "GLFW ERROR: " << error << '\n';
+}
 
 namespace phm
 {
@@ -21,10 +27,13 @@ namespace phm
 
 	void Window::initWindow()
 	{
+		glfwSetErrorCallback(GLFWErrorCallback);
+
 		glfwInit();
+		//gladLoadVulkanUserPtr(NULL, (GLADuserptrloadfunc) glfwGetInstanceProcAddress, NULL);
+
 		// We're not using openGL, so disable it.
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		
 		// Make the window resizable.
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
